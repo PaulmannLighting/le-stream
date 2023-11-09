@@ -14,6 +14,9 @@ struct MyStruct {
     heapless_vec: heapless::Vec<u8, { u8::MAX as usize }>,
 }
 
+#[derive(Debug, Eq, PartialEq, FromLeBytes, ToLeBytes)]
+struct Unit;
+
 #[test]
 fn deserialize() {
     let bytes = [
@@ -29,6 +32,10 @@ fn deserialize() {
     assert_eq!(my_struct.tail, 0xff);
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(my_struct.is_working);
+
+    let unit = Unit::from_le_bytes(&mut bytes.into_iter())
+        .expect("Could not create struct from byte stream.");
+    assert_eq!(unit, Unit);
 }
 
 #[test]
@@ -48,4 +55,8 @@ fn serialize() {
     ];
 
     assert_eq!(my_struct.to_le_bytes().collect::<Vec<_>>(), bytes);
+
+    let unit = Unit;
+    let bytes: Vec<_> = unit.to_le_bytes().collect();
+    assert_eq!(bytes, vec![]);
 }
