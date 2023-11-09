@@ -1,13 +1,13 @@
 [package]
 name = "le-stream"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 heapless = { version = "0.8.0", optional = true }
-le-stream-derive = {git = "https://github.com/PaulmannLighting/le-stream-derive.git", optional = true}
+le-stream-derive = { version = "0.1.1", git = "https://github.com/PaulmannLighting/le-stream-derive.git", optional = true }
 
 [features]
 derive = ["dep:le-stream-derive"]
