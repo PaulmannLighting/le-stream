@@ -11,3 +11,4 @@ le-stream-derive = {git = "https://github.com/PaulmannLighting/le-stream-derive.
 
 [features]
 derive = ["dep:le-stream-derive"]
+heapless = ["dep:heapless"]
