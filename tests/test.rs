@@ -1,6 +1,6 @@
 #![cfg(test)]
+use le_stream::derive::{FromLeBytes, ToLeBytes};
 use le_stream::{FromLeBytes, ToLeBytes};
-use le_stream_derive::{FromLeBytes, ToLeBytes};
 
 #[derive(Debug, FromLeBytes, ToLeBytes)]
 struct MyStruct {
