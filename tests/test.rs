@@ -11,7 +11,7 @@ struct MyStruct {
     tail: u8,
     array_u16: [u16; 2],
     is_working: bool,
-    heapless_vec: heapless::Vec<u8, 256>,
+    heapless_vec: heapless::Vec<u8, { u8::MAX as usize }>,
 }
 
 #[test]
