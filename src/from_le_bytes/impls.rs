@@ -1,5 +1,17 @@
 use crate::{Error, FromLeBytes, Result};
 
+impl FromLeBytes for bool {
+    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        bytes
+            .next()
+            .ok_or(Error::UnexpectedEndOfStream)
+            .map(|byte| byte != 0)
+    }
+}
+
 impl FromLeBytes for u8 {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
     where

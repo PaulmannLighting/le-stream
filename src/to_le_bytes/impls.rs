@@ -2,6 +2,14 @@ use crate::ToLeBytes;
 use std::array::IntoIter;
 use std::iter::Empty;
 
+impl ToLeBytes for bool {
+    type Iter = IntoIter<u8, 1>;
+
+    fn to_le_bytes(&self) -> Self::Iter {
+        u8::to_le_bytes(u8::from(*self)).into_iter()
+    }
+}
+
 impl ToLeBytes for u8 {
     type Iter = IntoIter<Self, 1>;
 
