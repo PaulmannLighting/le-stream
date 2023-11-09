@@ -1,6 +1,6 @@
 use crate::ToLeBytes;
 use std::array::IntoIter;
-use std::iter::Empty;
+use std::iter::{empty, Empty};
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
@@ -83,6 +83,35 @@ where
 
     fn to_le_bytes(&self) -> Self::Iter {
         let mut iterator: Box<dyn Iterator<Item = u8>> = Box::<Empty<u8>>::default();
+
+        for item in self {
+            iterator = Box::new(iterator.chain(<I as ToLeBytes>::to_le_bytes(item)));
+        }
+
+        iterator
+    }
+}
+
+#[cfg(feature = "heapless")]
+impl<I, const SIZE: usize> ToLeBytes for heapless::Vec<I, SIZE>
+where
+    I: ToLeBytes,
+    <I as ToLeBytes>::Iter: Iterator<Item = u8> + 'static,
+{
+    type Iter = Box<dyn Iterator<Item = u8>>;
+
+    fn to_le_bytes(&self) -> Self::Iter {
+        let mut iterator: Box<dyn Iterator<Item = u8>> = Box::new(empty());
+
+        if let Ok(ref size) = u8::try_from(SIZE) {
+            iterator = Box::new(<u8 as ToLeBytes>::to_le_bytes(size));
+        } else if let Ok(ref size) = u16::try_from(SIZE) {
+            iterator = Box::new(<u16 as ToLeBytes>::to_le_bytes(size));
+        } else if let Ok(ref size) = u32::try_from(SIZE) {
+            iterator = Box::new(<u32 as ToLeBytes>::to_le_bytes(size));
+        } else if let Ok(ref size) = u64::try_from(SIZE) {
+            iterator = Box::new(<u64 as ToLeBytes>::to_le_bytes(size));
+        }
 
         for item in self {
             iterator = Box::new(iterator.chain(<I as ToLeBytes>::to_le_bytes(item)));

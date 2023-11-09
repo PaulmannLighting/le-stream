@@ -1,4 +1,5 @@
 use crate::{Error, FromLeBytes, Result};
+use std::fmt::Debug;
 
 impl FromLeBytes for bool {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
@@ -135,6 +136,40 @@ where
 
         for item in &mut result {
             *item = <I as FromLeBytes>::from_le_bytes(bytes)?;
+        }
+
+        Ok(result)
+    }
+}
+
+#[cfg(feature = "heapless")]
+impl<I, const SIZE: usize> FromLeBytes for heapless::Vec<I, SIZE>
+where
+    I: Debug + FromLeBytes,
+{
+    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        let size: usize;
+
+        if u8::try_from(SIZE).is_ok() {
+            size = <u8 as FromLeBytes>::from_le_bytes(bytes)? as usize;
+        } else if u16::try_from(SIZE).is_ok() {
+            size = <u16 as FromLeBytes>::from_le_bytes(bytes)? as usize;
+        } else if u32::try_from(SIZE).is_ok() {
+            size = <u32 as FromLeBytes>::from_le_bytes(bytes)? as usize;
+        } else {
+            size = usize::try_from(<u64 as FromLeBytes>::from_le_bytes(bytes)?)
+                .expect("invalid usize");
+        }
+
+        let mut result = Self::new();
+
+        for _ in 0..size {
+            result
+                .push(<I as FromLeBytes>::from_le_bytes(bytes)?)
+                .expect("buffer overflow");
         }
 
         Ok(result)
