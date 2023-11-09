@@ -104,13 +104,13 @@ where
     fn to_le_bytes(&self) -> Self::Iter {
         let mut iterator: Box<dyn Iterator<Item = u8>> = Box::new(empty());
 
-        if u8::try_from(SIZE).is_ok() {
+        if u8::try_from(SIZE.saturating_sub(1)).is_ok() {
             iterator = Box::new(<u8 as ToLeBytes>::to_le_bytes(&(self.len() as u8)));
-        } else if u16::try_from(SIZE).is_ok() {
+        } else if u16::try_from(SIZE.saturating_sub(1)).is_ok() {
             iterator = Box::new(<u16 as ToLeBytes>::to_le_bytes(&(self.len() as u16)));
-        } else if u32::try_from(SIZE).is_ok() {
+        } else if u32::try_from(SIZE.saturating_sub(1)).is_ok() {
             iterator = Box::new(<u32 as ToLeBytes>::to_le_bytes(&(self.len() as u32)));
-        } else if u64::try_from(SIZE).is_ok() {
+        } else if u64::try_from(SIZE.saturating_sub(1)).is_ok() {
             iterator = Box::new(<u64 as ToLeBytes>::to_le_bytes(&(self.len() as u64)));
         }
 
