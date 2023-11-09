@@ -153,11 +153,11 @@ where
     {
         let size: usize;
 
-        if u8::try_from(SIZE).is_ok() {
+        if u8::try_from(SIZE.saturating_sub(1)).is_ok() {
             size = <u8 as FromLeBytes>::from_le_bytes(bytes)? as usize;
-        } else if u16::try_from(SIZE).is_ok() {
+        } else if u16::try_from(SIZE.saturating_sub(1)).is_ok() {
             size = <u16 as FromLeBytes>::from_le_bytes(bytes)? as usize;
-        } else if u32::try_from(SIZE).is_ok() {
+        } else if u32::try_from(SIZE.saturating_sub(1)).is_ok() {
             size = <u32 as FromLeBytes>::from_le_bytes(bytes)? as usize;
         } else {
             size = usize::try_from(<u64 as FromLeBytes>::from_le_bytes(bytes)?)
