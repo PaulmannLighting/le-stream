@@ -18,7 +18,7 @@ struct MyStruct {
 struct Unit;
 
 #[test]
-fn deserialize() {
+fn deserialize_struct() {
     let bytes = [
         0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
         0x02, 0x03,
@@ -32,14 +32,18 @@ fn deserialize() {
     assert_eq!(my_struct.tail, 0xff);
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(my_struct.is_working);
+}
 
+#[test]
+fn deserialize_unit_struct() {
+    let bytes: [u8; 0] = [];
     let unit = Unit::from_le_bytes(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
     assert_eq!(unit, Unit);
 }
 
 #[test]
-fn serialize() {
+fn serialize_struct() {
     let my_struct = MyStruct {
         flag: 0x42,
         num: 0x1337,
@@ -55,7 +59,10 @@ fn serialize() {
     ];
 
     assert_eq!(my_struct.to_le_bytes().collect::<Vec<_>>(), bytes);
+}
 
+#[test]
+fn serialize_unit_struct() {
     let unit = Unit;
     let bytes: Vec<_> = unit.to_le_bytes().collect();
     assert_eq!(bytes, vec![]);
