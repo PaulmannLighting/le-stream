@@ -99,7 +99,7 @@ where
     I: ToLeBytes,
     <I as ToLeBytes>::Iter: Iterator<Item = u8> + 'static,
 {
-    type Iter = Box<dyn Iterator<Item = u8>>;
+    type Iter = Box<dyn Iterator<Item = u8> + 'static>;
 
     fn to_le_bytes(&self) -> Self::Iter {
         let mut iterator: Box<dyn Iterator<Item = u8>> = Box::new(empty());
