@@ -92,6 +92,7 @@ where
     }
 }
 
+#[allow(clippy::cast_possible_truncation)]
 #[cfg(feature = "heapless")]
 impl<I, const SIZE: usize> ToLeBytes for heapless::Vec<I, SIZE>
 where
