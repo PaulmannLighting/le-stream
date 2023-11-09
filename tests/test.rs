@@ -9,16 +9,25 @@ struct MyStruct {
     tail: u8,
 }
 
-fn main() {
+#[test]
+fn serialize() {
     let bytes = [0x42, 0x37, 0x13, 0xFF];
     let my_struct = MyStruct::from_le_bytes(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
+
     assert_eq!(my_struct.flag, 0x42);
     assert_eq!(my_struct.num, 0x1337);
     assert_eq!(my_struct.tail, 0xff);
-    println!("{my_struct:#04X?}");
+}
 
-    for byte in my_struct.to_le_bytes() {
-        println!("{byte:#04X?}");
-    }
+#[test]
+fn deserialize() {
+    let my_struct = MyStruct {
+        flag: 0x42,
+        num: 0x1337,
+        tail: 0xff,
+    };
+    let bytes = vec![0x42, 0x37, 0x13, 0xFF];
+
+    assert_eq!(my_struct.to_le_bytes().collect::<Vec<_>>(), bytes);
 }
