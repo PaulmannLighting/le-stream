@@ -97,9 +97,9 @@ where
 impl<I, const SIZE: usize> ToLeBytes for heapless::Vec<I, SIZE>
 where
     I: ToLeBytes,
-    <I as ToLeBytes>::Iter: Iterator<Item = u8> + 'static,
+    for<'a> <I as ToLeBytes>::Iter: Iterator<Item = u8> + 'a,
 {
-    type Iter = Box<dyn Iterator<Item = u8> + 'static>;
+    type Iter = Box<dyn Iterator<Item = u8>>;
 
     fn to_le_bytes(&self) -> Self::Iter {
         let mut iterator: Box<dyn Iterator<Item = u8>> = Box::new(empty());
