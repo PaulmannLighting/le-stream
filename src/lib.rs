@@ -7,4 +7,6 @@ pub use from_le_bytes::FromLeBytes;
 pub use to_le_bytes::ToLeBytes;
 
 #[cfg(feature = "derive")]
-pub use le_stream_derive::{FromLeBytes, ToLeBytes};
+pub mod derive {
+    pub use le_stream_derive::{FromLeBytes, ToLeBytes};
+}
