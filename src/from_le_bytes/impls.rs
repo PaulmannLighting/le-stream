@@ -1,5 +1,4 @@
 use crate::{Error, FromLeBytes, Result};
-use std::fmt::Debug;
 
 impl FromLeBytes for bool {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
@@ -145,7 +144,7 @@ where
 #[cfg(feature = "heapless")]
 impl<I, const SIZE: usize> FromLeBytes for heapless::Vec<I, SIZE>
 where
-    I: Debug + FromLeBytes,
+    I: std::fmt::Debug + FromLeBytes,
 {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
     where

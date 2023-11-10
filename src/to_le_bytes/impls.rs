@@ -3,7 +3,6 @@ mod container_iterator;
 use crate::ToLeBytes;
 use container_iterator::ContainerIterator;
 use std::array::IntoIter;
-use std::fmt::Debug;
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
