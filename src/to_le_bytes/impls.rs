@@ -2,7 +2,7 @@ mod size_prefix_iterator;
 
 use crate::ToLeBytes;
 use std::array::IntoIter;
-use std::iter::{Chain, FlatMap};
+use std::iter::FlatMap;
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
@@ -92,7 +92,7 @@ impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
     T: Sized + ToLeBytes,
 {
-    type Iter = Chain<
+    type Iter = std::iter::Chain<
         size_prefix_iterator::SizePrefixIterator,
         FlatMap<
             <Self as IntoIterator>::IntoIter,
@@ -102,7 +102,7 @@ where
     >;
 
     fn to_le_bytes(self) -> Self::Iter {
-        size_prefix_iterator::SizePrefixIterator::from(&self).chain(
+        size_prefix_iterator::SizePrefixIterator::new(self.len(), SIZE).chain(
             self.into_iter()
                 .flat_map(<T as ToLeBytes>::to_le_bytes as fn(T) -> <T as ToLeBytes>::Iter),
         )

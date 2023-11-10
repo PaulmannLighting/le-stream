@@ -12,7 +12,7 @@ pub enum SizePrefixIterator {
 
 impl SizePrefixIterator {
     #[allow(clippy::cast_possible_truncation)]
-    fn new(len: usize, capacity: usize) -> Self {
+    pub fn new(len: usize, capacity: usize) -> Self {
         if u8::try_from(capacity).is_ok() {
             Self::U8(<u8 as ToLeBytes>::to_le_bytes(len as u8))
         } else if u16::try_from(capacity).is_ok() {
@@ -37,14 +37,5 @@ impl Iterator for SizePrefixIterator {
             Self::U32(header) => header.next(),
             Self::U64(header) => header.next(),
         }
-    }
-}
-
-impl<T, const SIZE: usize> From<&heapless::Vec<T, SIZE>> for SizePrefixIterator
-where
-    T: ToLeBytes,
-{
-    fn from(vec: &heapless::Vec<T, SIZE>) -> Self {
-        Self::new(vec.len(), SIZE)
     }
 }
