@@ -1,6 +1,6 @@
 mod impls;
 
-pub trait ToLeBytes: Sized
+pub trait ToLeBytes
 where
     Self::Iter: Iterator<Item = u8>,
 {
