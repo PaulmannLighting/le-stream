@@ -3,6 +3,7 @@ mod container_iterator;
 use crate::ToLeBytes;
 use container_iterator::ContainerIterator;
 use std::array::IntoIter;
+use std::fmt::Debug;
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
@@ -78,7 +79,7 @@ impl ToLeBytes for i64 {
 
 impl<T, const SIZE: usize> ToLeBytes for [T; SIZE]
 where
-    T: ToLeBytes,
+    T: Debug + ToLeBytes,
 {
     type Iter = ContainerIterator<Self>;
 
@@ -91,7 +92,7 @@ where
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
-    T: ToLeBytes,
+    T: Debug + ToLeBytes,
 {
     type Iter = ContainerIterator<Self>;
 
