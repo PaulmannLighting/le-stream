@@ -56,7 +56,7 @@ where
                     .flat_map(<<T as IntoIterator>::Item as ToLeBytes>::to_le_bytes),
             )
         } else {
-            unreachable!("vec size exceeds u64");
+            unreachable!("container size exceeds u64");
         }
     }
 
