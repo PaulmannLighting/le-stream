@@ -1,4 +1,5 @@
 use crate::{Error, FromLeBytes, Result};
+use std::mem::zeroed;
 
 impl FromLeBytes for bool {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
@@ -123,18 +124,18 @@ impl FromLeBytes for i64 {
     }
 }
 
-impl<I, const SIZE: usize> FromLeBytes for [I; SIZE]
+impl<T, const SIZE: usize> FromLeBytes for [T; SIZE]
 where
-    I: Copy + Default + FromLeBytes,
+    T: FromLeBytes,
 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
     where
-        T: Iterator<Item = u8>,
+        I: Iterator<Item = u8>,
     {
-        let mut result = [I::default(); SIZE];
+        let mut result = unsafe { zeroed::<[T; SIZE]>() };
 
         for item in &mut result {
-            *item = <I as FromLeBytes>::from_le_bytes(bytes)?;
+            *item = <T as FromLeBytes>::from_le_bytes(bytes)?;
         }
 
         Ok(result)
@@ -142,13 +143,13 @@ where
 }
 
 #[cfg(feature = "heapless")]
-impl<I, const SIZE: usize> FromLeBytes for heapless::Vec<I, SIZE>
+impl<T, const SIZE: usize> FromLeBytes for heapless::Vec<T, SIZE>
 where
-    I: std::fmt::Debug + FromLeBytes,
+    T: std::fmt::Debug + FromLeBytes,
 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
     where
-        T: Iterator<Item = u8>,
+        I: Iterator<Item = u8>,
     {
         let size: usize;
 
@@ -167,7 +168,7 @@ where
 
         for _ in 0..size {
             result
-                .push(<I as FromLeBytes>::from_le_bytes(bytes)?)
+                .push(<T as FromLeBytes>::from_le_bytes(bytes)?)
                 .expect("buffer overflow");
         }
 
