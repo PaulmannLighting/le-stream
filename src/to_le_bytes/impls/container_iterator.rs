@@ -8,7 +8,7 @@ type ItemFlatMap<T> = FlatMap<
     fn(<T as IntoIterator>::Item) -> <<T as IntoIterator>::Item as ToLeBytes>::Iter,
 >;
 
-pub enum SizedContainerIterator<T>
+pub enum ContainerIterator<T>
 where
     T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
@@ -19,7 +19,7 @@ where
     U64(IntoIter<u8, 8>, ItemFlatMap<T>),
 }
 
-impl<T> SizedContainerIterator<T>
+impl<T> ContainerIterator<T>
 where
     T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
@@ -61,7 +61,7 @@ where
     }
 }
 
-impl<T> Iterator for SizedContainerIterator<T>
+impl<T> Iterator for ContainerIterator<T>
 where
     T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
@@ -78,7 +78,7 @@ where
     }
 }
 
-impl<T, const SIZE: usize> From<[T; SIZE]> for SizedContainerIterator<[T; SIZE]>
+impl<T, const SIZE: usize> From<[T; SIZE]> for ContainerIterator<[T; SIZE]>
 where
     T: ToLeBytes,
 {
@@ -89,7 +89,7 @@ where
 
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> From<heapless::Vec<T, SIZE>>
-    for SizedContainerIterator<heapless::Vec<T, SIZE>>
+    for ContainerIterator<heapless::Vec<T, SIZE>>
 where
     T: ToLeBytes,
 {

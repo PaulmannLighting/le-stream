@@ -1,7 +1,7 @@
-mod heapless_vec_iterator;
+mod container_iterator;
 
 use crate::ToLeBytes;
-use heapless_vec_iterator::SizedContainerIterator;
+use container_iterator::ContainerIterator;
 use std::array::IntoIter;
 
 impl ToLeBytes for bool {
@@ -80,10 +80,10 @@ impl<T, const SIZE: usize> ToLeBytes for [T; SIZE]
 where
     T: ToLeBytes,
 {
-    type Iter = SizedContainerIterator<Self>;
+    type Iter = ContainerIterator<Self>;
 
     fn to_le_bytes(self) -> Self::Iter {
-        SizedContainerIterator::from(self)
+        ContainerIterator::from(self)
     }
 }
 
@@ -93,9 +93,9 @@ impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
     T: ToLeBytes,
 {
-    type Iter = SizedContainerIterator<Self>;
+    type Iter = ContainerIterator<Self>;
 
     fn to_le_bytes(self) -> Self::Iter {
-        SizedContainerIterator::from(self)
+        ContainerIterator::from(self)
     }
 }
