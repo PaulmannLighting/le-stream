@@ -6,5 +6,5 @@ where
 {
     type Iter;
 
-    fn to_le_bytes(&self) -> Self::Iter;
+    fn to_le_bytes(self) -> Self::Iter;
 }
