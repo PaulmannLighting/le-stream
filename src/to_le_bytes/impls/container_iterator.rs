@@ -13,6 +13,7 @@ where
     T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
 {
+    Const(ItemFlatMap<T>),
     U8(IntoIter<u8, 1>, ItemFlatMap<T>),
     U16(IntoIter<u8, 2>, ItemFlatMap<T>),
     U32(IntoIter<u8, 4>, ItemFlatMap<T>),
@@ -25,8 +26,7 @@ where
     <T as IntoIterator>::Item: ToLeBytes,
 {
     #[allow(clippy::cast_possible_truncation)]
-    #[must_use]
-    pub fn new(items: T, len: usize, capacity: usize) -> Self {
+    fn dynamically_sized(items: T, len: usize, capacity: usize) -> Self {
         if u8::try_from(capacity).is_ok() {
             Self::U8(
                 <u8 as ToLeBytes>::to_le_bytes(len as u8),
@@ -59,6 +59,14 @@ where
             unreachable!("vec size exceeds u64");
         }
     }
+
+    fn const_sized(items: T) -> Self {
+        Self::Const(
+            items
+                .into_iter()
+                .flat_map(<<T as IntoIterator>::Item as ToLeBytes>::to_le_bytes),
+        )
+    }
 }
 
 impl<T> Iterator for ContainerIterator<T>
@@ -70,6 +78,7 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
+            Self::Const(items) => items.next(),
             Self::U8(header, items) => header.next().map_or_else(|| items.next(), Some),
             Self::U16(header, items) => header.next().map_or_else(|| items.next(), Some),
             Self::U32(header, items) => header.next().map_or_else(|| items.next(), Some),
@@ -83,7 +92,18 @@ where
     T: ToLeBytes,
 {
     fn from(array: [T; SIZE]) -> Self {
-        Self::new(array, SIZE, SIZE)
+        Self::const_sized(array)
+    }
+}
+
+impl<T> From<Vec<T>> for ContainerIterator<Vec<T>>
+where
+    T: ToLeBytes,
+{
+    fn from(vec: Vec<T>) -> Self {
+        let len = vec.len();
+        let capacity = vec.capacity();
+        Self::dynamically_sized(vec, len, capacity)
     }
 }
 
@@ -95,6 +115,6 @@ where
 {
     fn from(vec: heapless::Vec<T, SIZE>) -> Self {
         let len = vec.len();
-        Self::new(vec, len, SIZE)
+        Self::dynamically_sized(vec, len, SIZE)
     }
 }
