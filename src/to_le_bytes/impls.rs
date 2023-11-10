@@ -3,6 +3,7 @@ mod container_iterator;
 use crate::ToLeBytes;
 use container_iterator::ContainerIterator;
 use std::array::IntoIter;
+use std::iter::FlatMap;
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
@@ -80,14 +81,13 @@ impl<T, const SIZE: usize> ToLeBytes for [T; SIZE]
 where
     T: ToLeBytes,
 {
-    type Iter = ContainerIterator<Self>;
+    type Iter = FlatMap<IntoIter<T, SIZE>, <T as ToLeBytes>::Iter, fn(T) -> <T as ToLeBytes>::Iter>;
 
     fn to_le_bytes(self) -> Self::Iter {
-        ContainerIterator::from(self)
+        self.into_iter().flat_map(<T as ToLeBytes>::to_le_bytes)
     }
 }
 
-#[allow(clippy::cast_possible_truncation)]
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
