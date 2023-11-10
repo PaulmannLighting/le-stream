@@ -102,8 +102,7 @@ where
 {
     fn from(vec: Vec<T>) -> Self {
         let len = vec.len();
-        let capacity = vec.capacity();
-        Self::dynamically_sized(vec, len, capacity)
+        Self::dynamically_sized(vec, len, usize::MAX)
     }
 }
 
