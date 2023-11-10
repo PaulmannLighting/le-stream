@@ -1,3 +1,4 @@
+#![cfg(feature = "heapless")]
 use crate::ToLeBytes;
 use std::array::IntoIter;
 use std::iter::FlatMap;
@@ -77,7 +78,6 @@ where
     }
 }
 
-#[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> From<heapless::Vec<T, SIZE>>
     for ContainerIterator<heapless::Vec<T, SIZE>>
 where
