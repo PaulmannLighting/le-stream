@@ -1,6 +1,5 @@
 use crate::ToLeBytes;
 use std::array::IntoIter;
-use std::fmt::Debug;
 use std::iter::FlatMap;
 
 type ItemFlatMap<T> = FlatMap<
@@ -9,10 +8,9 @@ type ItemFlatMap<T> = FlatMap<
     fn(<T as IntoIterator>::Item) -> <<T as IntoIterator>::Item as ToLeBytes>::Iter,
 >;
 
-#[derive(Debug)]
 pub enum ContainerIterator<T>
 where
-    T: Debug + IntoIterator,
+    T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
 {
     U8(IntoIter<u8, 1>, ItemFlatMap<T>),
@@ -23,7 +21,7 @@ where
 
 impl<T> ContainerIterator<T>
 where
-    T: Debug + IntoIterator,
+    T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
 {
     #[allow(clippy::cast_possible_truncation)]
@@ -65,7 +63,7 @@ where
 
 impl<T> Iterator for ContainerIterator<T>
 where
-    T: Debug + IntoIterator,
+    T: IntoIterator,
     <T as IntoIterator>::Item: ToLeBytes,
 {
     type Item = u8;
@@ -82,7 +80,7 @@ where
 
 impl<T, const SIZE: usize> From<[T; SIZE]> for ContainerIterator<[T; SIZE]>
 where
-    T: Debug + ToLeBytes,
+    T: ToLeBytes,
 {
     fn from(array: [T; SIZE]) -> Self {
         Self::new(array, SIZE, SIZE)
@@ -93,7 +91,7 @@ where
 impl<T, const SIZE: usize> From<heapless::Vec<T, SIZE>>
     for ContainerIterator<heapless::Vec<T, SIZE>>
 where
-    T: Debug + ToLeBytes,
+    T: ToLeBytes,
 {
     fn from(vec: heapless::Vec<T, SIZE>) -> Self {
         let len = vec.len();

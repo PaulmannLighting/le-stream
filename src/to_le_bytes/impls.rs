@@ -79,7 +79,7 @@ impl ToLeBytes for i64 {
 
 impl<T, const SIZE: usize> ToLeBytes for [T; SIZE]
 where
-    T: Debug + ToLeBytes,
+    T: ToLeBytes,
 {
     type Iter = ContainerIterator<Self>;
 
@@ -92,7 +92,7 @@ where
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
-    T: Debug + ToLeBytes,
+    T: ToLeBytes,
 {
     type Iter = ContainerIterator<Self>;
 
