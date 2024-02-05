@@ -32,6 +32,9 @@ fn deserialize_struct() {
     assert_eq!(my_struct.tail, 0xff);
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(my_struct.is_working);
+    let heapless_vec: heapless::Vec<u8, { u8::MAX as usize }> =
+        [0x01, 0x02, 0x03].as_slice().try_into().unwrap();
+    assert_eq!(my_struct.heapless_vec, heapless_vec);
 }
 
 #[test]
