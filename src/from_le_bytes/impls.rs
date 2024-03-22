@@ -1,6 +1,12 @@
 use crate::{Error, FromLeBytes, Result};
 use std::mem::zeroed;
 
+impl FromLeBytes for () {
+    fn from_le_bytes<T>(_: &mut T) -> Result<Self> where T: Iterator<Item=u8> {
+        Ok(())
+    }
+}
+
 impl FromLeBytes for bool {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
     where

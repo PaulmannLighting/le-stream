@@ -2,7 +2,15 @@ mod size_prefix_iterator;
 
 use crate::ToLeBytes;
 use std::array::IntoIter;
-use std::iter::FlatMap;
+use std::iter::{empty, Empty, FlatMap};
+
+impl ToLeBytes for () {
+    type Iter = Empty<u8>;
+
+    fn to_le_bytes(self) -> Self::Iter {
+        empty()
+    }
+}
 
 impl ToLeBytes for bool {
     type Iter = IntoIter<u8, 1>;
