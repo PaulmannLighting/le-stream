@@ -152,16 +152,16 @@ where
     }
 }
 
-impl<V> FromLeBytes for Option<V>
+impl<T> FromLeBytes for Option<T>
 where
-    V: FromLeBytes,
+    T: FromLeBytes,
 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
     where
-        T: Iterator<Item = u8>,
+        I: Iterator<Item = u8>,
     {
         match bytes.next() {
-            Some(byte) => Ok(Some(V::from_le_bytes(&mut once(byte).chain(bytes))?)),
+            Some(byte) => Ok(Some(T::from_le_bytes(&mut once(byte).chain(bytes))?)),
             None => Ok(None),
         }
     }
