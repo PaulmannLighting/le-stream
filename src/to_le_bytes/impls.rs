@@ -95,6 +95,21 @@ where
     }
 }
 
+impl<T> ToLeBytes for Option<T>
+where
+    T: ToLeBytes + 'static,
+{
+    type Iter = Box<dyn Iterator<Item = u8>>;
+
+    fn to_le_bytes(self) -> Self::Iter {
+        #[allow(clippy::option_if_let_else)]
+        match self {
+            Some(t) => Box::new(t.to_le_bytes()),
+            None => Box::new(empty()),
+        }
+    }
+}
+
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where

@@ -1,8 +1,12 @@
 use crate::{Error, FromLeBytes, Result};
+use std::iter::once;
 use std::mem::zeroed;
 
 impl FromLeBytes for () {
-    fn from_le_bytes<T>(_: &mut T) -> Result<Self> where T: Iterator<Item=u8> {
+    fn from_le_bytes<T>(_: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
         Ok(())
     }
 }
@@ -145,6 +149,21 @@ where
         }
 
         Ok(result)
+    }
+}
+
+impl<V> FromLeBytes for Option<V>
+where
+    V: FromLeBytes,
+{
+    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        match bytes.next() {
+            Some(byte) => Ok(Some(V::from_le_bytes(&mut once(byte).chain(bytes))?)),
+            None => Ok(None),
+        }
     }
 }
 
