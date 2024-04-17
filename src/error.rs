@@ -2,7 +2,7 @@ use std::fmt::{Display, Formatter};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Error {
     StreamNotExhausted,
     UnexpectedEndOfStream,
