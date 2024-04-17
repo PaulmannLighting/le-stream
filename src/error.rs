@@ -11,8 +11,8 @@ pub enum Error {
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::StreamNotExhausted(byte) => {
-                write!(f, "byte stream not exhausted: [{byte:#04X?}, ..]")
+            Self::StreamNotExhausted(next_byte) => {
+                write!(f, "byte stream not exhausted: [{next_byte:#04X?}, ..]")
             }
             Self::UnexpectedEndOfStream => write!(f, "unexpected end of stream"),
         }
