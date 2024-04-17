@@ -22,11 +22,8 @@ pub trait FromLeBytes: Sized {
         T: Iterator<Item = u8>,
     {
         let instance = Self::from_le_bytes(bytes)?;
-
-        if bytes.peekable().peek().is_some() {
-            Err(Error::StreamNotExhausted)
-        } else {
-            Ok(instance)
-        }
+        bytes
+            .next()
+            .map_or_else(|| Ok(instance), |byte| Err(Error::StreamNotExhausted(byte)))
     }
 }
