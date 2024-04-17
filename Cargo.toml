@@ -1,6 +1,11 @@
 [package]
 name = "le-stream"
 version = "0.1.4"
+description = "De-/serialize objects from/to little endian byte streams"
+license = "MIT"
+repository = "https://github.com/PaulmannLighting/le-stream"
+keywords = ["little", "endian", "byte", "stream"]
+categories = ["encoding"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
