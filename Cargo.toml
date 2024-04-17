@@ -1,6 +1,6 @@
 [package]
 name = "le-stream"
-version = "0.1.4"
+version = "0.1.5"
 description = "De-/serialize objects from/to little endian byte streams"
 license = "MIT"
 repository = "https://github.com/PaulmannLighting/le-stream"
