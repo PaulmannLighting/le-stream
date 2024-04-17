@@ -1,9 +1,11 @@
 #![cfg(test)]
 #![allow(clippy::unwrap_used)]
-use le_stream::derive::{FromLeBytes, ToLeBytes};
-use le_stream::{FromLeBytes, ToLeBytes};
 
-#[derive(Debug, FromLeBytes, ToLeBytes)]
+use le_stream::derive::{FromLeBytes, ToLeBytes};
+use le_stream::{Error, FromLeBytes, ToLeBytes};
+use std::iter::empty;
+
+#[derive(Clone, Debug, Eq, PartialEq, FromLeBytes, ToLeBytes)]
 struct MyStruct {
     flag: u8,
     num: u16,
@@ -89,4 +91,34 @@ fn deserialize_struct_exact() {
     let heapless_vec: heapless::Vec<u8, { u8::MAX as usize }> =
         [0x01, 0x02, 0x03].as_slice().try_into().unwrap();
     assert_eq!(my_struct.heapless_vec, heapless_vec);
+}
+
+#[test]
+fn deserialize_empty() {
+    assert_eq!(
+        MyStruct::from_le_bytes(&mut empty()),
+        Err(Error::UnexpectedEndOfStream)
+    );
+}
+
+#[test]
+fn deserialize_empty_exact() {
+    assert_eq!(
+        MyStruct::from_le_bytes_exact(&mut empty()),
+        Err(Error::UnexpectedEndOfStream)
+    );
+}
+
+#[test]
+fn deserialize_excess_exact() {
+    let mut bytes = vec![
+        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
+        0x02, 0x03,
+    ];
+    // Add one excess byte:
+    bytes.push(0xFF);
+    assert_eq!(
+        MyStruct::from_le_bytes_exact(&mut bytes.into_iter()),
+        Err(Error::StreamNotExhausted)
+    );
 }
