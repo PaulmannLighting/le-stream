@@ -111,15 +111,17 @@ fn deserialize_empty_exact() {
 
 #[test]
 fn deserialize_excess_exact() {
-    const EXTRA_BYTE: u8 = 0xFF;
+    const EXTRA_BYTE: u8 = 0xFE;
+    const TAIL: u8 = 0xFF;
     let bytes = [
         0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
-        0x02, 0x03, EXTRA_BYTE,
+        0x02, 0x03, EXTRA_BYTE, TAIL,
     ];
     let mut iter = bytes.into_iter();
     assert_eq!(
         MyStruct::from_le_bytes_exact(&mut iter),
         Err(Error::StreamNotExhausted(EXTRA_BYTE))
     );
+    assert_eq!(iter.next(), Some(TAIL));
     assert_eq!(iter.next(), None);
 }
