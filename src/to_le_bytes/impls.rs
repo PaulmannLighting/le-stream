@@ -98,7 +98,7 @@ where
 
 impl<T> ToLeBytes for Option<T>
 where
-    T: ToLeBytes + 'static,
+    T: ToLeBytes,
 {
     type Iter = option_iterator::OptionIterator<T>;
 
