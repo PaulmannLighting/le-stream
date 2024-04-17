@@ -70,3 +70,23 @@ fn serialize_unit_struct() {
     let bytes: Vec<_> = unit.to_le_bytes().collect();
     assert_eq!(bytes, vec![]);
 }
+
+#[test]
+fn deserialize_struct_exact() {
+    let bytes = [
+        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
+        0x02, 0x03,
+    ];
+    let my_struct = MyStruct::from_le_bytes_exact(&mut bytes.into_iter())
+        .expect("Could not create struct from byte stream.");
+
+    assert_eq!(my_struct.flag, 0x42);
+    assert_eq!(my_struct.num, 0x1337);
+    assert_eq!(my_struct.array, [0x12, 0x34, 0x56, 0x78]);
+    assert_eq!(my_struct.tail, 0xff);
+    assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
+    assert!(my_struct.is_working);
+    let heapless_vec: heapless::Vec<u8, { u8::MAX as usize }> =
+        [0x01, 0x02, 0x03].as_slice().try_into().unwrap();
+    assert_eq!(my_struct.heapless_vec, heapless_vec);
+}
