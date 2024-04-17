@@ -1,3 +1,4 @@
+mod option_iterator;
 mod size_prefix_iterator;
 
 use crate::ToLeBytes;
@@ -99,14 +100,10 @@ impl<T> ToLeBytes for Option<T>
 where
     T: ToLeBytes + 'static,
 {
-    type Iter = Box<dyn Iterator<Item = u8>>;
+    type Iter = option_iterator::OptionIterator<T>;
 
     fn to_le_bytes(self) -> Self::Iter {
-        #[allow(clippy::option_if_let_else)]
-        match self {
-            Some(t) => Box::new(t.to_le_bytes()),
-            None => Box::new(empty()),
-        }
+        option_iterator::OptionIterator::new(self)
     }
 }
 
