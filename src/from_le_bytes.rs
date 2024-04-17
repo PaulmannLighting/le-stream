@@ -16,7 +16,7 @@ pub trait FromLeBytes: Sized {
     ///
     /// # Errors
     /// Returns an [`Error`] if the stream terminates prematurely
-    /// or is not exhausted after reading `Self`.
+    /// or is not exhausted after deserializing `Self`.
     fn from_le_bytes_exact<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
