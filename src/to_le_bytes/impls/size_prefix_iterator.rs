@@ -1,6 +1,8 @@
 #![cfg(feature = "heapless")]
-use crate::ToLeBytes;
+
 use std::array::IntoIter;
+
+use crate::ToLeBytes;
 
 #[derive(Debug)]
 pub enum SizePrefixIterator {
@@ -8,6 +10,7 @@ pub enum SizePrefixIterator {
     U16(IntoIter<u8, 2>),
     U32(IntoIter<u8, 4>),
     U64(IntoIter<u8, 8>),
+    U128(IntoIter<u8, 16>),
 }
 
 impl SizePrefixIterator {
@@ -21,8 +24,10 @@ impl SizePrefixIterator {
             Self::U32(<u32 as ToLeBytes>::to_le_bytes(len as u32))
         } else if u64::try_from(capacity).is_ok() {
             Self::U64(<u64 as ToLeBytes>::to_le_bytes(len as u64))
+        } else if u128::try_from(capacity).is_ok() {
+            Self::U128(<u128 as ToLeBytes>::to_le_bytes(len as u128))
         } else {
-            unreachable!("container size exceeds u64");
+            unreachable!("container size exceeds u128");
         }
     }
 }
@@ -36,6 +41,7 @@ impl Iterator for SizePrefixIterator {
             Self::U16(header) => header.next(),
             Self::U32(header) => header.next(),
             Self::U64(header) => header.next(),
+            Self::U128(header) => header.next(),
         }
     }
 }
