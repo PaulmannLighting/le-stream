@@ -1,9 +1,10 @@
-mod option_iterator;
-mod size_prefix_iterator;
-
-use crate::ToLeBytes;
 use std::array::IntoIter;
 use std::iter::{empty, Empty, FlatMap};
+
+use crate::ToLeBytes;
+
+mod option_iterator;
+mod size_prefix_iterator;
 
 impl ToLeBytes for () {
     type Iter = Empty<u8>;

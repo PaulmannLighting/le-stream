@@ -1,6 +1,6 @@
-mod impls;
-
 use crate::{Error, Result};
+
+mod impls;
 
 pub trait FromLeBytes: Sized {
     /// Parse an object from a stream of bytes with little endianness.

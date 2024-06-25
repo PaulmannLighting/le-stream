@@ -1,6 +1,7 @@
-use crate::{Error, FromLeBytes, Result};
 use std::iter::once;
 use std::mem::zeroed;
+
+use crate::{Error, FromLeBytes, Result};
 
 impl FromLeBytes for () {
     fn from_le_bytes<T>(_: &mut T) -> Result<Self>
