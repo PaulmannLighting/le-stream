@@ -53,6 +53,14 @@ impl ToLeBytes for u64 {
     }
 }
 
+impl ToLeBytes for u128 {
+    type Iter = IntoIter<u8, 16>;
+
+    fn to_le_bytes(self) -> Self::Iter {
+        Self::to_le_bytes(self).into_iter()
+    }
+}
+
 impl ToLeBytes for i8 {
     type Iter = IntoIter<u8, 1>;
 

@@ -77,6 +77,21 @@ impl FromLeBytes for u64 {
     }
 }
 
+impl FromLeBytes for u128 {
+    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        let mut buffer = [0; 16];
+
+        for byte in &mut buffer {
+            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
+        }
+
+        Ok(Self::from_le_bytes(buffer))
+    }
+}
+
 impl FromLeBytes for i8 {
     fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
     where
