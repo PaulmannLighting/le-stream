@@ -158,6 +158,8 @@ where
     where
         I: Iterator<Item = u8>,
     {
+        #[allow(unsafe_code)]
+        // SAFETY: We will initialize all elements of the array in the for loop below.
         let mut result = unsafe { zeroed::<[T; SIZE]>() };
 
         for item in &mut result {

@@ -1,3 +1,4 @@
+//! A library for reading and writing data in little-endian byte order.
 pub use error::{Error, Result};
 pub use from_le_bytes::FromLeBytes;
 pub use to_le_bytes::ToLeBytes;

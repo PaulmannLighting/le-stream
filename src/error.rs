@@ -1,10 +1,14 @@
 use std::fmt::{Display, Formatter};
 
+/// Result type with [`Error`] as error variant.
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Error type for byte stream operations.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Error {
+    /// The byte stream was not exhausted.
     StreamNotExhausted(u8),
+    /// The byte stream ended prematurely.
     UnexpectedEndOfStream,
 }
 
