@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use std::iter::once;
 use std::mem::zeroed;
 
@@ -194,27 +195,31 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let size: usize;
-
-        if u8::try_from(SIZE).is_ok() {
-            size = <u8 as FromLeBytes>::from_le_bytes(bytes)? as usize;
-        } else if u16::try_from(SIZE).is_ok() {
-            size = <u16 as FromLeBytes>::from_le_bytes(bytes)? as usize;
-        } else if u32::try_from(SIZE).is_ok() {
-            size = <u32 as FromLeBytes>::from_le_bytes(bytes)? as usize;
-        } else {
-            size = usize::try_from(<u64 as FromLeBytes>::from_le_bytes(bytes)?)
-                .expect("invalid usize");
-        }
-
+        let size: usize = parse_size::<SIZE, I>(bytes)?;
         let mut result = Self::new();
 
         for _ in 0..size {
             result
                 .push(<T as FromLeBytes>::from_le_bytes(bytes)?)
-                .expect("buffer overflow");
+                .unwrap_or_else(|_| unreachable!());
         }
 
         Ok(result)
+    }
+}
+
+fn parse_size<const SIZE: usize, T>(bytes: &mut T) -> Result<usize>
+where
+    T: Iterator<Item = u8>,
+{
+    if u8::try_from(SIZE).is_ok() {
+        <u8 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+    } else if u16::try_from(SIZE).is_ok() {
+        <u16 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+    } else if u32::try_from(SIZE).is_ok() {
+        <u32 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+    } else {
+        <u64 as FromLeBytes>::from_le_bytes(bytes)
+            .map(|size| usize::try_from(size).expect("usize exceeds u64"))
     }
 }

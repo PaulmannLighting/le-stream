@@ -131,9 +131,8 @@ where
     >;
 
     fn to_le_bytes(self) -> Self::Iter {
-        size_prefix_iterator::SizePrefixIterator::new(self.len(), SIZE).chain(
-            self.into_iter()
-                .flat_map(<T as ToLeBytes>::to_le_bytes as fn(T) -> <T as ToLeBytes>::Iter),
-        )
+        #[allow(trivial_casts)]
+        size_prefix_iterator::SizePrefixIterator::new(self.len(), SIZE)
+            .chain(self.into_iter().flat_map(ToLeBytes::to_le_bytes as _))
     }
 }
