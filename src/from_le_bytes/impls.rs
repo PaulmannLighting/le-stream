@@ -189,7 +189,7 @@ where
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> FromLeBytes for heapless::Vec<T, SIZE>
 where
-    T: std::fmt::Debug + FromLeBytes,
+    T: Debug + FromLeBytes,
 {
     fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
     where
@@ -208,6 +208,7 @@ where
     }
 }
 
+#[cfg(feature = "heapless")]
 fn parse_size<const SIZE: usize, T>(bytes: &mut T) -> Result<usize>
 where
     T: Iterator<Item = u8>,
