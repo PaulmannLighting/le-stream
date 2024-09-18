@@ -7,6 +7,7 @@ mod error;
 mod from_le_bytes;
 mod to_le_bytes;
 
+/// Re-export the `FromLeBytes` and `ToLeBytes` derive macros.
 #[cfg(feature = "derive")]
 pub mod derive {
     pub use le_stream_derive::{FromLeBytes, ToLeBytes};
