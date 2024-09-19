@@ -161,7 +161,7 @@ where
     {
         #[allow(unsafe_code)]
         // SAFETY: We will initialize all elements of the array in the for loop below.
-        let mut result = unsafe { zeroed::<[T; SIZE]>() };
+        let mut result: [T; SIZE] = unsafe { zeroed() };
 
         for item in &mut result {
             *item = <T as FromLeStream>::from_le_stream(bytes)?;
