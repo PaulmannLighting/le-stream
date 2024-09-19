@@ -1,21 +1,21 @@
-use crate::ToLeBytes;
+use crate::ToLeStream;
 
-pub struct OptionIterator<T>(Option<<T as ToLeBytes>::Iter>)
+pub struct OptionIterator<T>(Option<<T as ToLeStream>::Iter>)
 where
-    T: ToLeBytes;
+    T: ToLeStream;
 
 impl<T> OptionIterator<T>
 where
-    T: ToLeBytes,
+    T: ToLeStream,
 {
     pub fn new(option: Option<T>) -> Self {
-        Self(option.map(ToLeBytes::to_le_bytes))
+        Self(option.map(ToLeStream::to_le_stream))
     }
 }
 
 impl<T> Iterator for OptionIterator<T>
 where
-    T: ToLeBytes,
+    T: ToLeStream,
 {
     type Item = u8;
 

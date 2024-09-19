@@ -2,7 +2,7 @@
 
 use std::array::IntoIter;
 
-use crate::ToLeBytes;
+use crate::ToLeStream;
 
 #[derive(Debug)]
 pub enum SizePrefixIterator {
@@ -17,15 +17,15 @@ impl SizePrefixIterator {
     #[allow(clippy::cast_possible_truncation)]
     pub fn new(len: usize, capacity: usize) -> Self {
         if u8::try_from(capacity).is_ok() {
-            Self::U8(<u8 as ToLeBytes>::to_le_bytes(len as u8))
+            Self::U8(<u8 as ToLeStream>::to_le_stream(len as u8))
         } else if u16::try_from(capacity).is_ok() {
-            Self::U16(<u16 as ToLeBytes>::to_le_bytes(len as u16))
+            Self::U16(<u16 as ToLeStream>::to_le_stream(len as u16))
         } else if u32::try_from(capacity).is_ok() {
-            Self::U32(<u32 as ToLeBytes>::to_le_bytes(len as u32))
+            Self::U32(<u32 as ToLeStream>::to_le_stream(len as u32))
         } else if u64::try_from(capacity).is_ok() {
-            Self::U64(<u64 as ToLeBytes>::to_le_bytes(len as u64))
+            Self::U64(<u64 as ToLeStream>::to_le_stream(len as u64))
         } else if u128::try_from(capacity).is_ok() {
-            Self::U128(<u128 as ToLeBytes>::to_le_bytes(len as u128))
+            Self::U128(<u128 as ToLeStream>::to_le_stream(len as u128))
         } else {
             unreachable!("container size exceeds u128");
         }

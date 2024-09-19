@@ -1,7 +1,7 @@
 mod impls;
 
 /// Convert an object to a stream of bytes with little endianness.
-pub trait ToLeBytes
+pub trait ToLeStream
 where
     Self::Iter: Iterator<Item = u8>,
 {
@@ -9,5 +9,5 @@ where
     type Iter;
 
     /// Return an iterator of bytes with little endianness.
-    fn to_le_bytes(self) -> Self::Iter;
+    fn to_le_stream(self) -> Self::Iter;
 }

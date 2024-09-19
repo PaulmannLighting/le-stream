@@ -2,11 +2,11 @@
 #![cfg(feature = "derive")]
 #![cfg(feature = "heapless")]
 
-use le_stream::derive::{FromLeBytes, ToLeBytes};
-use le_stream::{Error, FromLeBytes, ToLeBytes};
+use le_stream::derive::{FromLeStream, ToLeStream};
+use le_stream::{Error, FromLeStream, ToLeStream};
 use std::iter::empty;
 
-#[derive(Clone, Debug, Eq, PartialEq, FromLeBytes, ToLeBytes)]
+#[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
 struct MyStruct {
     flag: u8,
     num: u16,
@@ -17,7 +17,7 @@ struct MyStruct {
     heapless_vec: heapless::Vec<u8, { u8::MAX as usize }>,
 }
 
-#[derive(Debug, Eq, PartialEq, FromLeBytes, ToLeBytes)]
+#[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
 struct Unit;
 
 #[test]
@@ -26,7 +26,7 @@ fn deserialize_struct() {
         0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
         0x02, 0x03,
     ];
-    let my_struct = MyStruct::from_le_bytes(&mut bytes.into_iter())
+    let my_struct = MyStruct::from_le_stream(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
 
     assert_eq!(my_struct.flag, 0x42);
@@ -43,7 +43,7 @@ fn deserialize_struct() {
 #[test]
 fn deserialize_unit_struct() {
     let bytes: [u8; 0] = [];
-    let unit = Unit::from_le_bytes(&mut bytes.into_iter())
+    let unit = Unit::from_le_stream(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
     assert_eq!(unit, Unit);
 }
@@ -64,13 +64,13 @@ fn serialize_struct() {
         0x02, 0x03,
     ];
 
-    assert_eq!(my_struct.to_le_bytes().collect::<Vec<_>>(), bytes);
+    assert_eq!(my_struct.to_le_stream().collect::<Vec<_>>(), bytes);
 }
 
 #[test]
 fn serialize_unit_struct() {
     let unit = Unit;
-    let bytes: Vec<_> = unit.to_le_bytes().collect();
+    let bytes: Vec<_> = unit.to_le_stream().collect();
     assert_eq!(bytes, vec![]);
 }
 
@@ -80,7 +80,7 @@ fn deserialize_struct_exact() {
         0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, 0x03, 0x01,
         0x02, 0x03,
     ];
-    let my_struct = MyStruct::from_le_bytes_exact(&mut bytes.into_iter())
+    let my_struct = MyStruct::from_le_stream_exact(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
 
     assert_eq!(my_struct.flag, 0x42);
@@ -97,7 +97,7 @@ fn deserialize_struct_exact() {
 #[test]
 fn deserialize_empty() {
     assert_eq!(
-        MyStruct::from_le_bytes(&mut empty()),
+        MyStruct::from_le_stream(&mut empty()),
         Err(Error::UnexpectedEndOfStream)
     );
 }
@@ -105,7 +105,7 @@ fn deserialize_empty() {
 #[test]
 fn deserialize_empty_exact() {
     assert_eq!(
-        MyStruct::from_le_bytes_exact(&mut empty()),
+        MyStruct::from_le_stream_exact(&mut empty()),
         Err(Error::UnexpectedEndOfStream)
     );
 }
@@ -120,7 +120,7 @@ fn deserialize_excess_exact() {
     ];
     let mut iter = bytes.into_iter();
     assert_eq!(
-        MyStruct::from_le_bytes_exact(&mut iter),
+        MyStruct::from_le_stream_exact(&mut iter),
         Err(Error::StreamNotExhausted(EXTRA_BYTE))
     );
     assert_eq!(iter.next(), Some(TAIL));

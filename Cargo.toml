@@ -1,6 +1,6 @@
 [package]
 name = "le-stream"
-version = "0.1.8"
+version = "0.2.0"
 description = "De-/serialize objects from/to little endian byte streams"
 authors = ["Richard Neumann <neumann@paulmann.de>"]
 license = "MIT"
@@ -14,7 +14,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 heapless = { version = "0.8", optional = true }
-le-stream-derive = { version = "0.1", optional = true }
+le-stream-derive = { version = "0.2", optional = true }
 
 [features]
 derive = ["dep:le-stream-derive"]

@@ -2,10 +2,10 @@ use std::fmt::Debug;
 use std::iter::once;
 use std::mem::zeroed;
 
-use crate::{Error, FromLeBytes, Result};
+use crate::{Error, FromLeStream, Result};
 
-impl FromLeBytes for () {
-    fn from_le_bytes<T>(_: &mut T) -> Result<Self>
+impl FromLeStream for () {
+    fn from_le_stream<T>(_: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -13,8 +13,8 @@ impl FromLeBytes for () {
     }
 }
 
-impl FromLeBytes for bool {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for bool {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -25,8 +25,8 @@ impl FromLeBytes for bool {
     }
 }
 
-impl FromLeBytes for u8 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for u8 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = Self>,
     {
@@ -34,8 +34,8 @@ impl FromLeBytes for u8 {
     }
 }
 
-impl FromLeBytes for u16 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for u16 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -49,8 +49,8 @@ impl FromLeBytes for u16 {
     }
 }
 
-impl FromLeBytes for u32 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for u32 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -64,8 +64,8 @@ impl FromLeBytes for u32 {
     }
 }
 
-impl FromLeBytes for u64 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for u64 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -79,8 +79,8 @@ impl FromLeBytes for u64 {
     }
 }
 
-impl FromLeBytes for u128 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for u128 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -94,8 +94,8 @@ impl FromLeBytes for u128 {
     }
 }
 
-impl FromLeBytes for i8 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for i8 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -106,8 +106,8 @@ impl FromLeBytes for i8 {
     }
 }
 
-impl FromLeBytes for i16 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for i16 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -121,8 +121,8 @@ impl FromLeBytes for i16 {
     }
 }
 
-impl FromLeBytes for i32 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for i32 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -136,8 +136,8 @@ impl FromLeBytes for i32 {
     }
 }
 
-impl FromLeBytes for i64 {
-    fn from_le_bytes<T>(bytes: &mut T) -> Result<Self>
+impl FromLeStream for i64 {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
@@ -151,11 +151,11 @@ impl FromLeBytes for i64 {
     }
 }
 
-impl<T, const SIZE: usize> FromLeBytes for [T; SIZE]
+impl<T, const SIZE: usize> FromLeStream for [T; SIZE]
 where
-    T: FromLeBytes,
+    T: FromLeStream,
 {
-    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
+    fn from_le_stream<I>(bytes: &mut I) -> Result<Self>
     where
         I: Iterator<Item = u8>,
     {
@@ -164,34 +164,34 @@ where
         let mut result = unsafe { zeroed::<[T; SIZE]>() };
 
         for item in &mut result {
-            *item = <T as FromLeBytes>::from_le_bytes(bytes)?;
+            *item = <T as FromLeStream>::from_le_stream(bytes)?;
         }
 
         Ok(result)
     }
 }
 
-impl<T> FromLeBytes for Option<T>
+impl<T> FromLeStream for Option<T>
 where
-    T: FromLeBytes,
+    T: FromLeStream,
 {
-    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
+    fn from_le_stream<I>(bytes: &mut I) -> Result<Self>
     where
         I: Iterator<Item = u8>,
     {
         match bytes.next() {
-            Some(byte) => Ok(Some(T::from_le_bytes(&mut once(byte).chain(bytes))?)),
+            Some(byte) => Ok(Some(T::from_le_stream(&mut once(byte).chain(bytes))?)),
             None => Ok(None),
         }
     }
 }
 
 #[cfg(feature = "heapless")]
-impl<T, const SIZE: usize> FromLeBytes for heapless::Vec<T, SIZE>
+impl<T, const SIZE: usize> FromLeStream for heapless::Vec<T, SIZE>
 where
-    T: Debug + FromLeBytes,
+    T: Debug + FromLeStream,
 {
-    fn from_le_bytes<I>(bytes: &mut I) -> Result<Self>
+    fn from_le_stream<I>(bytes: &mut I) -> Result<Self>
     where
         I: Iterator<Item = u8>,
     {
@@ -200,7 +200,7 @@ where
 
         for _ in 0..size {
             result
-                .push(<T as FromLeBytes>::from_le_bytes(bytes)?)
+                .push(<T as FromLeStream>::from_le_stream(bytes)?)
                 .unwrap_or_else(|_| unreachable!());
         }
 
@@ -214,13 +214,13 @@ where
     T: Iterator<Item = u8>,
 {
     if u8::try_from(SIZE).is_ok() {
-        <u8 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+        <u8 as FromLeStream>::from_le_stream(bytes).map(|size| size as usize)
     } else if u16::try_from(SIZE).is_ok() {
-        <u16 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+        <u16 as FromLeStream>::from_le_stream(bytes).map(|size| size as usize)
     } else if u32::try_from(SIZE).is_ok() {
-        <u32 as FromLeBytes>::from_le_bytes(bytes).map(|size| size as usize)
+        <u32 as FromLeStream>::from_le_stream(bytes).map(|size| size as usize)
     } else {
-        <u64 as FromLeBytes>::from_le_bytes(bytes)
+        <u64 as FromLeStream>::from_le_stream(bytes)
             .map(|size| usize::try_from(size).expect("usize exceeds u64"))
     }
 }

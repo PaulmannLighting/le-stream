@@ -1,14 +1,14 @@
 //! A library for reading and writing data in little-endian byte order.
 pub use error::{Error, Result};
-pub use from_le_bytes::FromLeBytes;
-pub use to_le_bytes::ToLeBytes;
+pub use from_le_stream::FromLeStream;
+pub use to_le_stream::ToLeStream;
 
 mod error;
-mod from_le_bytes;
-mod to_le_bytes;
+mod from_le_stream;
+mod to_le_stream;
 
 /// Re-export the `FromLeBytes` and `ToLeBytes` derive macros.
 #[cfg(feature = "derive")]
 pub mod derive {
-    pub use le_stream_derive::{FromLeBytes, ToLeBytes};
+    pub use le_stream_derive::{FromLeStream, ToLeStream};
 }
