@@ -15,10 +15,10 @@ impl ToLeStream for () {
 }
 
 impl ToLeStream for bool {
-    type Iter = IntoIter<u8, 1>;
+    type Iter = <u8 as ToLeStream>::Iter;
 
     fn to_le_stream(self) -> Self::Iter {
-        u8::to_le_bytes(u8::from(self)).into_iter()
+        u8::from(self).to_le_stream()
     }
 }
 
@@ -26,7 +26,7 @@ impl ToLeStream for u8 {
     type Iter = IntoIter<Self, 1>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -34,7 +34,7 @@ impl ToLeStream for u16 {
     type Iter = IntoIter<u8, 2>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -42,7 +42,7 @@ impl ToLeStream for u32 {
     type Iter = IntoIter<u8, 4>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -50,7 +50,7 @@ impl ToLeStream for u64 {
     type Iter = IntoIter<u8, 8>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -58,7 +58,7 @@ impl ToLeStream for u128 {
     type Iter = IntoIter<u8, 16>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -66,7 +66,7 @@ impl ToLeStream for i8 {
     type Iter = IntoIter<u8, 1>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -74,7 +74,7 @@ impl ToLeStream for i16 {
     type Iter = IntoIter<u8, 2>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -82,7 +82,7 @@ impl ToLeStream for i32 {
     type Iter = IntoIter<u8, 4>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
@@ -90,7 +90,7 @@ impl ToLeStream for i64 {
     type Iter = IntoIter<u8, 8>;
 
     fn to_le_stream(self) -> Self::Iter {
-        Self::to_le_bytes(self).into_iter()
+        self.to_le_bytes().into_iter()
     }
 }
 
