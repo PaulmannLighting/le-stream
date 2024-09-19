@@ -179,10 +179,10 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        match bytes.next() {
-            Some(byte) => Ok(Some(T::from_le_stream(&mut once(byte).chain(bytes))?)),
-            None => Ok(None),
-        }
+        bytes.next().map_or_else(
+            || Ok(None),
+            |byte| T::from_le_stream(&mut once(byte).chain(bytes)).map(Some),
+        )
     }
 }
 
