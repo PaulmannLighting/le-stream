@@ -164,6 +164,10 @@ where
         let mut result: [T; SIZE] = unsafe { zeroed() };
 
         for item in &mut result {
+            // Initialize all elements of the array with valid values of `T`
+            // as returned by `FromLeStream::from_le_stream`.
+            // If `FromLeStream::from_le_stream` returns an error, we will return early
+            // and discard the uninitialized array.
             *item = <T as FromLeStream>::from_le_stream(bytes)?;
         }
 
