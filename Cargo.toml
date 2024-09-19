@@ -14,7 +14,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 heapless = { version = "0.8", optional = true }
-le-stream-derive = { version = "0.1", git = "https://github.com/PaulmannLighting/le-stream-derive.git", optional = true }
+le-stream-derive = { version = "0.1", optional = true }
 
 [features]
 derive = ["dep:le-stream-derive"]
