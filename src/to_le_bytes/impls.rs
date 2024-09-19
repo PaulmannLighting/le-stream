@@ -119,7 +119,7 @@ where
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeBytes for heapless::Vec<T, SIZE>
 where
-    T: Sized + ToLeBytes,
+    T: ToLeBytes,
 {
     type Iter = std::iter::Chain<
         size_prefix_iterator::SizePrefixIterator,
