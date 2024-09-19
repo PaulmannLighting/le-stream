@@ -171,6 +171,8 @@ where
             *item = <T as FromLeStream>::from_le_stream(bytes)?;
         }
 
+        // At this point the array is fully initialized by the for loop above,
+        // so it's safe to return it.
         Ok(result)
     }
 }
