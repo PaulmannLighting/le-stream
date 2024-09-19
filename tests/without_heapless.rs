@@ -6,12 +6,19 @@ use le_stream::{Error, FromLeStream, ToLeStream};
 use std::iter::empty;
 
 #[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
+struct SubStruct {
+    num: u16,
+    array: [u8; 4],
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
 struct MyStruct {
     flag: u8,
     num: u16,
     array: [u8; 4],
     tail: u8,
     array_u16: [u16; 2],
+    array_sub_struct: [SubStruct; 3],
     is_working: bool,
 }
 
@@ -21,7 +28,8 @@ struct Unit;
 #[test]
 fn deserialize_struct() {
     let bytes = [
-        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01,
+        66, 55, 19, 18, 52, 86, 120, 255, 170, 187, 204, 221, 52, 18, 86, 120, 154, 188, 52, 18,
+        86, 120, 154, 188, 52, 18, 86, 120, 154, 188, 1,
     ];
     let my_struct = MyStruct::from_le_stream(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
@@ -50,10 +58,25 @@ fn serialize_struct() {
         array: [0x12, 0x34, 0x56, 0x78],
         tail: 0xff,
         array_u16: [0xBBAA, 0xDDCC],
+        array_sub_struct: [
+            SubStruct {
+                num: 0x1234,
+                array: [0x56, 0x78, 0x9A, 0xBC],
+            },
+            SubStruct {
+                num: 0x1234,
+                array: [0x56, 0x78, 0x9A, 0xBC],
+            },
+            SubStruct {
+                num: 0x1234,
+                array: [0x56, 0x78, 0x9A, 0xBC],
+            },
+        ],
         is_working: false,
     };
     let bytes = vec![
-        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x00,
+        66, 55, 19, 18, 52, 86, 120, 255, 170, 187, 204, 221, 52, 18, 86, 120, 154, 188, 52, 18,
+        86, 120, 154, 188, 52, 18, 86, 120, 154, 188, 0,
     ];
 
     assert_eq!(my_struct.to_le_stream().collect::<Vec<_>>(), bytes);
@@ -69,7 +92,8 @@ fn serialize_unit_struct() {
 #[test]
 fn deserialize_struct_exact() {
     let bytes = [
-        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01,
+        66, 55, 19, 18, 52, 86, 120, 255, 170, 187, 204, 221, 52, 18, 86, 120, 154, 188, 52, 18,
+        86, 120, 154, 188, 52, 18, 86, 120, 154, 188, 0,
     ];
     let my_struct = MyStruct::from_le_stream_exact(&mut bytes.into_iter())
         .expect("Could not create struct from byte stream.");
@@ -102,8 +126,8 @@ fn deserialize_excess_exact() {
     const EXTRA_BYTE: u8 = 0xFE;
     const TAIL: u8 = 0xFF;
     let bytes = [
-        0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xFF, 0xAA, 0xBB, 0xCC, 0xDD, 0x01, EXTRA_BYTE,
-        TAIL,
+        66, 55, 19, 18, 52, 86, 120, 255, 170, 187, 204, 221, 52, 18, 86, 120, 154, 188, 52, 18,
+        86, 120, 154, 188, 52, 18, 86, 120, 154, 188, 0, EXTRA_BYTE, TAIL,
     ];
     let mut iter = bytes.into_iter();
     assert_eq!(
