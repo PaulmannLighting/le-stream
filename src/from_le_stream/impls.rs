@@ -1,8 +1,7 @@
+use crate::{Error, FromLeStream, Result};
 use std::fmt::Debug;
 use std::iter::once;
 use std::mem::zeroed;
-
-use crate::{Error, FromLeStream, Result};
 
 impl FromLeStream for () {
     fn from_le_stream<T>(_: &mut T) -> Result<Self>
@@ -85,6 +84,21 @@ impl FromLeStream for u128 {
         T: Iterator<Item = u8>,
     {
         let mut buffer = [0; 16];
+
+        for byte in &mut buffer {
+            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
+        }
+
+        Ok(Self::from_le_bytes(buffer))
+    }
+}
+
+impl FromLeStream for usize {
+    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        let mut buffer = [0; size_of::<Self>()];
 
         for byte in &mut buffer {
             *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;

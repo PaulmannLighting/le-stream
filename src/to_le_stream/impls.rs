@@ -1,7 +1,6 @@
+use crate::ToLeStream;
 use std::array::IntoIter;
 use std::iter::{empty, Empty, FlatMap};
-
-use crate::ToLeStream;
 
 mod option_iterator;
 mod size_prefix_iterator;
@@ -56,6 +55,14 @@ impl ToLeStream for u64 {
 
 impl ToLeStream for u128 {
     type Iter = IntoIter<u8, 16>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.to_le_bytes().into_iter()
+    }
+}
+
+impl ToLeStream for usize {
+    type Iter = IntoIter<u8, { size_of::<Self>() }>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.to_le_bytes().into_iter()

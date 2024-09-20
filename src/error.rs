@@ -10,6 +10,8 @@ pub enum Error {
     StreamNotExhausted(u8),
     /// The byte stream ended prematurely.
     UnexpectedEndOfStream,
+    /// The size of a `usize` exceeds that of a `u128`.
+    UsizeExceedsU128,
 }
 
 impl Display for Error {
@@ -19,6 +21,7 @@ impl Display for Error {
                 write!(f, "byte stream not exhausted: [{next_byte:#04X?}, ..]")
             }
             Self::UnexpectedEndOfStream => write!(f, "unexpected end of stream"),
+            Self::UsizeExceedsU128 => write!(f, "usize width exceeds u128"),
         }
     }
 }
