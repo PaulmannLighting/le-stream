@@ -38,13 +38,7 @@ impl FromLeStream for u16 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 2];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -53,13 +47,7 @@ impl FromLeStream for u32 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 4];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -68,13 +56,7 @@ impl FromLeStream for u64 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 8];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -83,13 +65,7 @@ impl FromLeStream for u128 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 16];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -98,13 +74,7 @@ impl FromLeStream for usize {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; size_of::<Self>()];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -113,10 +83,7 @@ impl FromLeStream for i8 {
     where
         T: Iterator<Item = u8>,
     {
-        bytes
-            .next()
-            .ok_or(Error::UnexpectedEndOfStream)
-            .map(|byte| Self::from_le_bytes([byte]))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -125,13 +92,7 @@ impl FromLeStream for i16 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 2];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -140,13 +101,7 @@ impl FromLeStream for i32 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 4];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
@@ -155,13 +110,7 @@ impl FromLeStream for i64 {
     where
         T: Iterator<Item = u8>,
     {
-        let mut buffer = [0; 8];
-
-        for byte in &mut buffer {
-            *byte = bytes.next().ok_or(Error::UnexpectedEndOfStream)?;
-        }
-
-        Ok(Self::from_le_bytes(buffer))
+        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
