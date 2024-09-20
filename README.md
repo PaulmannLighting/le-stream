@@ -81,7 +81,7 @@ fn deserialize_struct_exact() {
 fn deserialize_empty() {
     assert_eq!(
         MyStruct::from_le_stream(&mut empty()),
-        Err(Error::UnexpectedEndOfStream)
+        None
     );
 }
 
