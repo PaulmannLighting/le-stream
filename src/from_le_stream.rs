@@ -7,8 +7,8 @@ pub trait FromLeStream: Sized {
     /// Parse an object from a stream of bytes with little endianness.
     ///
     /// # Errors
-    /// Returns an [`Error`] if the stream terminates prematurely.
-    fn from_le_stream<T>(bytes: &mut T) -> Result<Self>
+    /// Returns [`None`] if the stream terminates prematurely.
+    fn from_le_stream<T>(bytes: &mut T) -> Option<Self>
     where
         T: Iterator<Item = u8>;
 
@@ -22,7 +22,7 @@ pub trait FromLeStream: Sized {
     where
         T: Iterator<Item = u8>,
     {
-        let instance = Self::from_le_stream(bytes)?;
+        let instance = Self::from_le_stream(bytes).ok_or(Error::UnexpectedEndOfStream)?;
         bytes.next().map_or_else(
             || Ok(instance),
             |next_byte| Err(Error::StreamNotExhausted(next_byte)),
