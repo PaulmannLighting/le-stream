@@ -1,6 +1,6 @@
 [package]
 name = "le-stream"
-version = "0.2.3"
+version = "0.2.4"
 description = "De-/serialize objects from/to little endian byte streams"
 authors = ["Richard Neumann <neumann@paulmann.de>"]
 license = "MIT"
