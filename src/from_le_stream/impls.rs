@@ -206,6 +206,25 @@ where
     }
 }
 
+impl<T> FromLeStream for Vec<T>
+where
+    T: Debug + FromLeStream,
+{
+    fn from_le_stream<I>(bytes: &mut I) -> Result<Self>
+    where
+        I: Iterator<Item = u8>,
+    {
+        let size: usize = usize::from_le_stream(bytes)?;
+        let mut result = Self::with_capacity(size);
+
+        for _ in 0..size {
+            result.push(<T as FromLeStream>::from_le_stream(bytes)?);
+        }
+
+        Ok(result)
+    }
+}
+
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> FromLeStream for heapless::Vec<T, SIZE>
 where

@@ -124,6 +124,27 @@ where
     }
 }
 
+impl<T> ToLeStream for Vec<T>
+where
+    T: ToLeStream,
+{
+    type Iter = std::iter::Chain<
+        <usize as ToLeStream>::Iter,
+        FlatMap<
+            <Self as IntoIterator>::IntoIter,
+            <T as ToLeStream>::Iter,
+            fn(T) -> <T as ToLeStream>::Iter,
+        >,
+    >;
+
+    fn to_le_stream(self) -> Self::Iter {
+        #[allow(trivial_casts)]
+        self.len()
+            .to_le_stream()
+            .chain(self.into_iter().flat_map(ToLeStream::to_le_stream as _))
+    }
+}
+
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeStream for heapless::Vec<T, SIZE>
 where
