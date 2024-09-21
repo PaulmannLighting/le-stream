@@ -135,6 +135,7 @@ where
                     };
                 }
 
+                // We cleaned up the partially initialized array and can nor return early.
                 return None;
             }
         }
