@@ -1,5 +1,6 @@
 use crate::FromLeStream;
 use std::fmt::Debug;
+use std::iter;
 use std::iter::once;
 
 impl FromLeStream for () {
@@ -118,11 +119,11 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let mut vec = heapless::Vec::<T, SIZE>::new();
-        (0..SIZE)
-            .map_while(|_| T::from_le_stream(bytes))
-            .for_each(|item| vec.push(item).unwrap_or_else(|_| unreachable!()));
-        vec.into_array().ok()
+        iter::from_fn(|| T::from_le_stream(bytes))
+            .take(SIZE)
+            .collect::<heapless::Vec<_, SIZE>>()
+            .into_array()
+            .ok()
     }
 }
 
