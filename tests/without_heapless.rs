@@ -148,3 +148,20 @@ fn deserialize_excess_exact() {
     assert_eq!(iter.next(), Some(TAIL));
     assert_eq!(iter.next(), None);
 }
+
+#[test]
+fn test_serialization_primitive() {
+    let i: i32 = 1234;
+    let bytes: [u8; 4] = [0xd2, 0x04, 0x00, 0x00];
+
+    for (byte, target) in i.to_le_stream().zip(bytes) {
+        assert_eq!(byte, target);
+    }
+}
+
+#[test]
+fn test_deserialization_primitive() {
+    let bytes: [u8; 4] = [0xd2, 0x04, 0x00, 0x00];
+    let target: i32 = 1234;
+    assert_eq!(i32::from_le_stream(&mut bytes.into_iter()), Some(target));
+}
