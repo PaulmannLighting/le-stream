@@ -120,9 +120,25 @@ where
         I: Iterator<Item = u8>,
     {
         let mut result = [const { MaybeUninit::uninit() }; SIZE];
+        let mut initialized_elements = 0;
 
-        for elem in &mut result[..] {
-            elem.write(<T as FromLeStream>::from_le_stream(bytes)?);
+        for item in &mut result[..] {
+            if let Some(elem) = T::from_le_stream(bytes) {
+                item.write(elem);
+                initialized_elements += 1;
+            } else {
+                // Drop all elements that we've initialized so far.
+                for item in &mut result[0..initialized_elements] {
+                    #[allow(unsafe_code)]
+                    // SAFETY: We counted the number of initialized elements,
+                    // so it's safe to drop those.
+                    unsafe {
+                        item.assume_init_drop();
+                    };
+                }
+
+                return None;
+            }
         }
 
         #[allow(unsafe_code)]
