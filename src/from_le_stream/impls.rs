@@ -184,7 +184,7 @@ where
 #[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> FromLeStream for heapless::Vec<T, SIZE>
 where
-    T: Debug + FromLeStream,
+    T: FromLeStream,
 {
     fn from_le_stream<I>(bytes: &mut I) -> Option<Self>
     where
