@@ -145,7 +145,6 @@ where
     }
 }
 
-#[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeStream for heapless::Vec<T, SIZE>
 where
     T: ToLeStream,

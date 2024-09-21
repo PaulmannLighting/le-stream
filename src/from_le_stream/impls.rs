@@ -181,7 +181,6 @@ where
     }
 }
 
-#[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> FromLeStream for heapless::Vec<T, SIZE>
 where
     T: FromLeStream,
@@ -203,7 +202,6 @@ where
     }
 }
 
-#[cfg(feature = "heapless")]
 fn parse_size<const SIZE: usize, T>(bytes: &mut T) -> Option<usize>
 where
     T: Iterator<Item = u8>,
