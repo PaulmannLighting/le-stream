@@ -1,7 +1,6 @@
 use crate::FromLeStream;
 use std::fmt::Debug;
 use std::iter::once;
-use std::mem::MaybeUninit;
 
 impl FromLeStream for () {
     fn from_le_stream<T>(_: &mut T) -> Option<Self>
@@ -119,31 +118,11 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let mut result = [const { MaybeUninit::uninit() }; SIZE];
-
-        for (index, item) in result.iter_mut().enumerate() {
-            if let Some(elem) = T::from_le_stream(bytes) {
-                item.write(elem);
-            } else {
-                // Drop all elements that we've initialized so far.
-                for item in &mut result[0..index] {
-                    #[allow(unsafe_code)]
-                    // SAFETY: We counted the number of initialized elements,
-                    // so it's safe to drop those.
-                    unsafe {
-                        item.assume_init_drop();
-                    };
-                }
-
-                // We cleaned up the partially initialized array and can nor return early.
-                return None;
-            }
-        }
-
-        #[allow(unsafe_code)]
-        // SAFETY: At this point the array is fully initialized by the for loop above,
-        // so it's safe to return it.
-        Some(unsafe { result.as_ptr().cast::<Self>().read() })
+        let mut vec = heapless::Vec::<T, SIZE>::new();
+        (0..SIZE)
+            .map_while(|_| T::from_le_stream(bytes))
+            .for_each(|item| vec.push(item).unwrap_or_else(|_| unreachable!()));
+        vec.into_array().ok()
     }
 }
 
