@@ -1,7 +1,7 @@
 use crate::FromLeStream;
 use std::fmt::Debug;
 use std::iter::once;
-use std::mem::zeroed;
+use std::mem::MaybeUninit;
 
 impl FromLeStream for () {
     fn from_le_stream<T>(_: &mut T) -> Option<Self>
@@ -119,21 +119,16 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        #[allow(unsafe_code)]
-        // SAFETY: We will initialize all elements of the array in the for loop below.
-        let mut result: [T; SIZE] = unsafe { zeroed() };
+        let mut result: [MaybeUninit<T>; SIZE] = [const { MaybeUninit::uninit() }; SIZE];
 
-        for item in &mut result {
-            // Initialize all elements of the array with valid values of `T`
-            // as returned by `FromLeStream::from_le_stream`.
-            // If `FromLeStream::from_le_stream` returns an error, we will return early
-            // and discard the uninitialized array.
-            *item = <T as FromLeStream>::from_le_stream(bytes)?;
+        for elem in &mut result[..] {
+            elem.write(<T as FromLeStream>::from_le_stream(bytes)?);
         }
 
-        // At this point the array is fully initialized by the for loop above,
+        #[allow(unsafe_code)]
+        // SAFETY: At this point the array is fully initialized by the for loop above,
         // so it's safe to return it.
-        Some(result)
+        Some(unsafe { result.as_ptr().cast::<[T; SIZE]>().read() })
     }
 }
 
