@@ -119,7 +119,7 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let mut result: [MaybeUninit<T>; SIZE] = [const { MaybeUninit::uninit() }; SIZE];
+        let mut result = [const { MaybeUninit::uninit() }; SIZE];
 
         for elem in &mut result[..] {
             elem.write(<T as FromLeStream>::from_le_stream(bytes)?);
@@ -128,7 +128,7 @@ where
         #[allow(unsafe_code)]
         // SAFETY: At this point the array is fully initialized by the for loop above,
         // so it's safe to return it.
-        Some(unsafe { result.as_ptr().cast::<[T; SIZE]>().read() })
+        Some(unsafe { result.as_ptr().cast::<Self>().read() })
     }
 }
 
