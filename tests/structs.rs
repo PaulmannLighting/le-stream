@@ -1,5 +1,4 @@
-#![cfg(test)]
-#![cfg(feature = "derive")]
+#![cfg(all(test, feature = "derive"))]
 
 use le_stream::derive::{FromLeStream, ToLeStream};
 use le_stream::{Error, FromLeStream, ToLeStream};
