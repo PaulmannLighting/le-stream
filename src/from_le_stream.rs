@@ -8,7 +8,7 @@ pub trait FromLeStream: Sized {
     ///
     /// # Errors
     /// Returns [`None`] if the stream terminates prematurely.
-    fn from_le_stream<T>(bytes: &mut T) -> Option<Self>
+    fn from_le_stream<T>(bytes: T) -> Option<Self>
     where
         T: Iterator<Item = u8>;
 
@@ -18,11 +18,11 @@ pub trait FromLeStream: Sized {
     /// # Errors
     /// Returns an [`Error`] if the stream terminates prematurely
     /// or is not exhausted after deserializing `Self`.
-    fn from_le_stream_exact<T>(bytes: &mut T) -> Result<Self>
+    fn from_le_stream_exact<T>(mut bytes: T) -> Result<Self>
     where
         T: Iterator<Item = u8>,
     {
-        let instance = Self::from_le_stream(bytes).ok_or(Error::UnexpectedEndOfStream)?;
+        let instance = Self::from_le_stream(&mut bytes).ok_or(Error::UnexpectedEndOfStream)?;
         bytes.next().map_or_else(
             || Ok(instance),
             |next_byte| Err(Error::StreamNotExhausted(next_byte)),
