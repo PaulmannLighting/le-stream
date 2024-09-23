@@ -1,6 +1,6 @@
 use crate::FromLeStream;
 
-pub fn parse_size<const SIZE: usize, T>(bytes: &mut T) -> Option<usize>
+pub fn parse_size<const SIZE: usize, T>(bytes: T) -> Option<usize>
 where
     T: Iterator<Item = u8>,
 {

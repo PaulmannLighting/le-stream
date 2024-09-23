@@ -172,7 +172,7 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let size: usize = parse_size::<SIZE, I>(&mut bytes)?;
+        let size: usize = parse_size::<SIZE, _>(&mut bytes)?;
         let mut result = Self::new();
 
         for _ in 0..size {
