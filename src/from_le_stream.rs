@@ -28,4 +28,13 @@ pub trait FromLeStream: Sized {
             |next_byte| Err(Error::StreamNotExhausted(next_byte)),
         )
     }
+
+    /// Parse an object from a slice of bytes with little endianness
+    /// that contains exactly the bytes to construct `Self`.
+    ///
+    /// # Errors
+    /// Returns an [`Error`] if the buffer is too small or contains excess data.
+    fn from_le_slice(bytes: &[u8]) -> Result<Self> {
+        Self::from_le_stream_exact(bytes.iter().copied())
+    }
 }
