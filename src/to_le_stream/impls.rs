@@ -164,3 +164,21 @@ where
             .chain(self.into_iter().flat_map(ToLeStream::to_le_stream as _))
     }
 }
+
+#[cfg(feature = "macaddr")]
+impl ToLeStream for macaddr::MacAddr6 {
+    type Iter = FlatMap<IntoIter<u8, 6>, IntoIter<u8, 1>, fn(u8) -> IntoIter<u8, 1>>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.into_array().to_le_stream()
+    }
+}
+
+#[cfg(feature = "macaddr")]
+impl ToLeStream for macaddr::MacAddr8 {
+    type Iter = FlatMap<IntoIter<u8, 8>, IntoIter<u8, 1>, fn(u8) -> IntoIter<u8, 1>>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.into_array().to_le_stream()
+    }
+}
