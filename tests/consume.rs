@@ -1,13 +1,10 @@
 #![cfg(test)]
 
-use le_stream::Consume;
+use le_stream::{Consume, Error};
 
 #[test]
 fn test_consume() {
     let bytes = [0xAB, 0xCD];
-    let int: u16 = bytes
-        .into_iter()
-        .consume()
-        .expect("Could not consume bytes.");
-    assert_eq!(int, 0xCDAB);
+    let int: Result<u16, Error> = bytes.into_iter().consume();
+    assert_eq!(int, Ok(0xCDAB));
 }
