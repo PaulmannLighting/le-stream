@@ -191,7 +191,10 @@ impl FromLeStream for macaddr::MacAddr6 {
     where
         T: Iterator<Item = u8>,
     {
-        <[u8; 6]>::from_le_stream(bytes).map(Self::from)
+        <[u8; 6]>::from_le_stream(bytes).map(|mut array| {
+            array.reverse();
+            Self::from(array)
+        })
     }
 }
 
@@ -201,6 +204,9 @@ impl FromLeStream for macaddr::MacAddr8 {
     where
         T: Iterator<Item = u8>,
     {
-        <[u8; 8]>::from_le_stream(bytes).map(Self::from)
+        <[u8; 8]>::from_le_stream(bytes).map(|mut array| {
+            array.reverse();
+            Self::from(array)
+        })
     }
 }
