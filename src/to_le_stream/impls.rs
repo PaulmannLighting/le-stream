@@ -1,6 +1,8 @@
 use crate::ToLeStream;
 use std::array::IntoIter;
-use std::iter::{empty, Empty, FlatMap, Rev};
+#[cfg(feature = "macaddr")]
+use std::iter::Rev;
+use std::iter::{empty, Empty, FlatMap};
 
 mod option_iterator;
 mod size_prefix_iterator;
