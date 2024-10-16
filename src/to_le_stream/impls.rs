@@ -1,6 +1,6 @@
 use crate::ToLeStream;
 use std::array::IntoIter;
-use std::iter::{empty, Empty, FlatMap};
+use std::iter::{empty, Empty, FlatMap, Rev};
 
 mod option_iterator;
 mod size_prefix_iterator;
@@ -167,22 +167,18 @@ where
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr6 {
-    type Iter = FlatMap<IntoIter<u8, 6>, IntoIter<u8, 1>, fn(u8) -> IntoIter<u8, 1>>;
+    type Iter = Rev<IntoIter<u8, 6>>;
 
     fn to_le_stream(self) -> Self::Iter {
-        let mut array = self.into_array();
-        array.reverse();
-        array.to_le_stream()
+        self.into_array().into_iter().rev()
     }
 }
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr8 {
-    type Iter = FlatMap<IntoIter<u8, 8>, IntoIter<u8, 1>, fn(u8) -> IntoIter<u8, 1>>;
+    type Iter = Rev<IntoIter<u8, 8>>;
 
     fn to_le_stream(self) -> Self::Iter {
-        let mut array = self.into_array();
-        array.reverse();
-        array.to_le_stream()
+        self.into_array().into_iter().rev()
     }
 }
