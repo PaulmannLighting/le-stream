@@ -1,3 +1,4 @@
+#![cfg(feature = "heapless")]
 use crate::FromLeStream;
 
 pub fn parse_size<const SIZE: usize, T>(bytes: T) -> Option<usize>
