@@ -3,6 +3,9 @@ use std::array::IntoIter;
 use std::iter::Rev;
 use std::iter::{empty, Empty, FlatMap};
 
+#[cfg(feature = "heapless")]
+use size_prefix_iterator::SizePrefixIterator;
+
 use crate::ToLeStream;
 
 mod option_iterator;
@@ -154,7 +157,7 @@ where
     T: ToLeStream,
 {
     type Iter = std::iter::Chain<
-        size_prefix_iterator::SizePrefixIterator,
+        SizePrefixIterator,
         FlatMap<
             <Self as IntoIterator>::IntoIter,
             <T as ToLeStream>::Iter,
@@ -164,7 +167,7 @@ where
 
     fn to_le_stream(self) -> Self::Iter {
         #[allow(trivial_casts)]
-        size_prefix_iterator::SizePrefixIterator::new(self.len(), SIZE)
+        SizePrefixIterator::new(self.len(), SIZE)
             .chain(self.into_iter().flat_map(ToLeStream::to_le_stream as _))
     }
 }
