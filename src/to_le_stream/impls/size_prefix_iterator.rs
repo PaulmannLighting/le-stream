@@ -1,3 +1,4 @@
+#![cfg(feature = "heapless")]
 use std::array::IntoIter;
 
 use crate::ToLeStream;
