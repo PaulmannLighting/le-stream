@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 use std::iter::once;
 
+#[cfg(feature = "heapless")]
 use parse_size::parse_size;
 
 use crate::FromLeStream;
