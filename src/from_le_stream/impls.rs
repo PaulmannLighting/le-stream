@@ -1,10 +1,11 @@
-mod parse_size;
+use std::fmt::Debug;
+use std::iter::once;
+
+use parse_size::parse_size;
 
 use crate::FromLeStream;
-use parse_size::parse_size;
-use std::fmt::Debug;
-use std::iter;
-use std::iter::once;
+
+mod parse_size;
 
 impl FromLeStream for () {
     fn from_le_stream<T>(_: T) -> Option<Self>
@@ -122,11 +123,13 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        iter::from_fn(|| T::from_le_stream(&mut bytes))
-            .take(SIZE)
-            .collect::<heapless::Vec<_, SIZE>>()
-            .into_array()
-            .ok()
+        let mut array = [const { None }; SIZE];
+
+        for item in &mut array {
+            item.replace(T::from_le_stream(&mut bytes)?);
+        }
+
+        Some(array.map(Option::unwrap))
     }
 }
 
@@ -164,6 +167,7 @@ where
     }
 }
 
+#[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> FromLeStream for heapless::Vec<T, SIZE>
 where
     T: FromLeStream,

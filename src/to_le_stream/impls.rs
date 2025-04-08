@@ -1,8 +1,9 @@
-use crate::ToLeStream;
 use std::array::IntoIter;
 #[cfg(feature = "macaddr")]
 use std::iter::Rev;
 use std::iter::{empty, Empty, FlatMap};
+
+use crate::ToLeStream;
 
 mod option_iterator;
 mod size_prefix_iterator;
@@ -147,6 +148,7 @@ where
     }
 }
 
+#[cfg(feature = "heapless")]
 impl<T, const SIZE: usize> ToLeStream for heapless::Vec<T, SIZE>
 where
     T: ToLeStream,
