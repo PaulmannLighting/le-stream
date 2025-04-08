@@ -1,3 +1,5 @@
+//! Tests for the `FromLeStream` and `ToLeStream` traits on structs.
+
 #![cfg(all(test, feature = "derive"))]
 
 use le_stream::derive::{FromLeStream, ToLeStream};

@@ -1,3 +1,5 @@
+//! Tests for the `FromLeStream` and `ToLeStream` traits on `MacAddr8`.
+
 #![cfg(all(test, feature = "macaddr"))]
 
 use le_stream::{FromLeStream, ToLeStream};

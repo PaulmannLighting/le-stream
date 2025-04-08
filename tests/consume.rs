@@ -1,3 +1,5 @@
+//! Test the `Consume` trait.
+
 #![cfg(test)]
 
 use le_stream::{Consume, Error};
