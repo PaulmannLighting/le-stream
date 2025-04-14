@@ -144,7 +144,7 @@ where
     {
         bytes.next().map_or_else(
             || Some(None),
-            |byte| T::from_le_stream(&mut once(byte).chain(bytes)).map(Some),
+            |byte| T::from_le_stream(once(byte).chain(bytes)).map(Some),
         )
     }
 }
