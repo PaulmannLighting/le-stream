@@ -1,0 +1,33 @@
+
+# cargo-vet config file
+
+[cargo-vet]
+version = "0.10"
+
+[imports.google]
+url = "https://raw.githubusercontent.com/google/supply-chain/main/audits.toml"
+
+[imports.mozilla]
+url = "https://raw.githubusercontent.com/mozilla/supply-chain/main/audits.toml"
+
+[imports.paulmann]
+url = "https://raw.githubusercontent.com/PaulmannLighting/le-stream-derive/refs/heads/main/supply-chain/audits.toml"
+
+[policy.le-stream]
+audit-as-crates-io = true
+
+[[exemptions.hash32]]
+version = "0.3.1"
+criteria = "safe-to-deploy"
+
+[[exemptions.heapless]]
+version = "0.8.0"
+criteria = "safe-to-deploy"
+
+[[exemptions.macaddr]]
+version = "1.0.1"
+criteria = "safe-to-deploy"
+
+[[exemptions.syn]]
+version = "2.0.79"
+criteria = "safe-to-deploy"
