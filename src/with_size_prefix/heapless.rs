@@ -10,6 +10,13 @@ mod size;
 /// A `heapless::Vec` with a size prefix.
 pub type SizedHeaplessVec<T, const SIZE: usize> = WithSizePrefix<Size, heapless::Vec<T, SIZE>>;
 
+impl<const SIZE: usize, T> WithSizePrefix<Size, heapless::Vec<T, SIZE>> {
+    /// Return a slice of the data contained in the vector.
+    pub fn as_slice(&self) -> &[T] {
+        self.data.as_slice()
+    }
+}
+
 impl<const SIZE: usize, T> FromLeStream for SizedHeaplessVec<T, SIZE>
 where
     T: FromLeStream,

@@ -1,5 +1,12 @@
-use crate::with_size_prefix::WithSizePrefix;
 use crate::FromLeStream;
+use crate::WithSizePrefix;
+
+impl<P, T> WithSizePrefix<P, Vec<T>> {
+    /// Return a slice of the data contained in the vector.
+    pub const fn as_slice(&self) -> &[T] {
+        self.data.as_slice()
+    }
+}
 
 impl<P, T> FromLeStream for WithSizePrefix<P, Vec<T>>
 where
