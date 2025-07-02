@@ -3,7 +3,7 @@
 #![cfg(all(test, feature = "derive"))]
 
 use le_stream::derive::{FromLeStream, ToLeStream};
-use le_stream::{Error, FromLeStream, SizedHeaplessVec, ToLeStream, WithSizePrefix};
+use le_stream::{ByteSizedVec, Error, FromLeStream, Prefixed, ToLeStream};
 use std::iter::empty;
 
 const MY_STRUCT_BYTES: [u8; 53] = [
@@ -29,8 +29,8 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
-    vec: WithSizePrefix<usize, Vec<u8>>,
-    heapless_vec: SizedHeaplessVec<u8, { u8::MAX as usize }>,
+    vec: Prefixed<usize, Vec<u8>>,
+    heapless_vec: Prefixed<u8, ByteSizedVec<u8>>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -85,7 +85,9 @@ fn serialize_struct() {
         is_working: false,
         size: 0x1213_3742_1213_3742,
         vec: vec![0xab, 0xcd].try_into().unwrap(),
-        heapless_vec: [0x01, 0x02, 0x03].as_slice().try_into().unwrap(),
+        heapless_vec: ByteSizedVec::try_from([0x01, 0x02, 0x03].as_slice())
+            .unwrap()
+            .into(),
     };
 
     assert_eq!(

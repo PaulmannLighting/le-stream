@@ -1,16 +1,16 @@
 use std::fmt::Debug;
 
 use crate::FromLeStream;
-use crate::WithSizePrefix;
+use crate::Prefixed;
 
-impl<P, T> WithSizePrefix<P, Vec<T>> {
+impl<P, T> Prefixed<P, Vec<T>> {
     /// Return a slice of the data contained in the vector.
     pub const fn as_slice(&self) -> &[T] {
         self.data.as_slice()
     }
 }
 
-impl<P, T> WithSizePrefix<P, Vec<T>>
+impl<P, T> Prefixed<P, Vec<T>>
 where
     P: TryFrom<usize>,
 {
@@ -24,7 +24,7 @@ where
     }
 }
 
-impl<P, T> WithSizePrefix<P, Vec<T>>
+impl<P, T> Prefixed<P, Vec<T>>
 where
     P: TryFrom<usize>,
     P::Error: Debug,
@@ -40,7 +40,7 @@ where
     }
 }
 
-impl<P, T> FromLeStream for WithSizePrefix<P, Vec<T>>
+impl<P, T> FromLeStream for Prefixed<P, Vec<T>>
 where
     P: Copy + FromLeStream + Into<usize>,
     T: FromLeStream,
@@ -62,7 +62,7 @@ where
     }
 }
 
-impl<P, T> TryFrom<Vec<T>> for WithSizePrefix<P, Vec<T>>
+impl<P, T> TryFrom<Vec<T>> for Prefixed<P, Vec<T>>
 where
     P: TryFrom<usize>,
 {

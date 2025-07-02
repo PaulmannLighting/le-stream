@@ -5,27 +5,27 @@ use std::ops::{Deref, DerefMut};
 use crate::ToLeStream;
 
 #[cfg(feature = "heapless")]
-pub use heapless::SizedHeaplessVec;
-
-#[cfg(feature = "heapless")]
 mod heapless;
+#[cfg(feature = "heapless")]
+pub use heapless::{ByteSizedVec, WordSizedVec};
+
 mod vec;
 
 /// A wrapper type that adds a size prefix to the data it contains.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct WithSizePrefix<P, D> {
+pub struct Prefixed<P, D> {
     prefix: P,
     data: D,
 }
 
-impl<P, D> WithSizePrefix<P, D> {
+impl<P, D> Prefixed<P, D> {
     /// Extract the data.
     pub fn into_data(self) -> D {
         self.data
     }
 }
 
-impl<P, D> ToLeStream for WithSizePrefix<P, D>
+impl<P, D> ToLeStream for Prefixed<P, D>
 where
     P: ToLeStream,
     D: ToLeStream,
@@ -37,7 +37,7 @@ where
     }
 }
 
-impl<P, D, T> AsRef<T> for WithSizePrefix<P, D>
+impl<P, D, T> AsRef<T> for Prefixed<P, D>
 where
     D: AsRef<T>,
 {
@@ -46,7 +46,7 @@ where
     }
 }
 
-impl<P, D, T> AsMut<T> for WithSizePrefix<P, D>
+impl<P, D, T> AsMut<T> for Prefixed<P, D>
 where
     D: AsMut<T>,
 {
@@ -55,7 +55,7 @@ where
     }
 }
 
-impl<P, D> Deref for WithSizePrefix<P, D>
+impl<P, D> Deref for Prefixed<P, D>
 where
     D: Deref,
 {
@@ -66,7 +66,7 @@ where
     }
 }
 
-impl<P, D> DerefMut for WithSizePrefix<P, D>
+impl<P, D> DerefMut for Prefixed<P, D>
 where
     D: DerefMut,
 {
