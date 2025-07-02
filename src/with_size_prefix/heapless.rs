@@ -11,6 +11,26 @@ mod size;
 pub type SizedHeaplessVec<T, const SIZE: usize> = WithSizePrefix<Size, heapless::Vec<T, SIZE>>;
 
 impl<const SIZE: usize, T> WithSizePrefix<Size, heapless::Vec<T, SIZE>> {
+    /// Create a new `SizedHeaplessVec` with the given data.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the length of the vector cannot be converted to a `Size`.
+    pub fn new(data: heapless::Vec<T, SIZE>) -> Self {
+        Self::try_new(data).expect("Size too lage. This is a bug.")
+    }
+
+    /// Create a new `SizedHeaplessVec` from a `heapless::Vec` if the size is valid.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the length of the vector exceeds `SIZE` or if the length cannot be converted to a `Size`.
+    pub fn try_new(data: heapless::Vec<T, SIZE>) -> Result<Self, Option<TryFromIntError>> {
+        Size::try_from(data.len())
+            .map_err(Some)
+            .map(|prefix| Self { prefix, data })
+    }
+
     /// Return a slice of the data contained in the vector.
     pub fn as_slice(&self) -> &[T] {
         self.data.as_slice()
