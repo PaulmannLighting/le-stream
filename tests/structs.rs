@@ -3,7 +3,7 @@
 #![cfg(all(test, feature = "derive"))]
 
 use le_stream::derive::{FromLeStream, ToLeStream};
-use le_stream::{Error, FromLeStream, ToLeStream};
+use le_stream::{Error, FromLeStream, SizedHeaplessVec, ToLeStream, WithSizePrefix};
 use std::iter::empty;
 
 const MY_STRUCT_BYTES: [u8; 53] = [
@@ -29,8 +29,8 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
-    vec: Vec<u8>,
-    heapless_vec: heapless::Vec<u8, { u8::MAX as usize }>,
+    vec: WithSizePrefix<usize, Vec<u8>>,
+    heapless_vec: SizedHeaplessVec<u8, { u8::MAX as usize }>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -48,8 +48,8 @@ fn deserialize_struct() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec, vec![0xAB, 0xCD]);
-    assert_eq!(my_struct.heapless_vec, [0x01, 0x02, 0x03]);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(my_struct.heapless_vec.into_data(), [0x01, 0x02, 0x03]);
 }
 
 #[test]
@@ -84,7 +84,7 @@ fn serialize_struct() {
         ],
         is_working: false,
         size: 0x1213_3742_1213_3742,
-        vec: vec![0xab, 0xcd],
+        vec: vec![0xab, 0xcd].try_into().unwrap(),
         heapless_vec: [0x01, 0x02, 0x03].as_slice().try_into().unwrap(),
     };
 
@@ -113,8 +113,8 @@ fn deserialize_struct_exact() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec, vec![0xAB, 0xCD]);
-    assert_eq!(my_struct.heapless_vec, [0x01, 0x02, 0x03]);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(my_struct.heapless_vec.into_data(), [0x01, 0x02, 0x03]);
 }
 
 #[test]
@@ -196,6 +196,6 @@ fn deserialize_from_slice() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec, vec![0xAB, 0xCD]);
-    assert_eq!(my_struct.heapless_vec, [0x01, 0x02, 0x03]);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(my_struct.heapless_vec.into_data(), [0x01, 0x02, 0x03]);
 }

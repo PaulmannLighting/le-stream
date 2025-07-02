@@ -1,12 +1,7 @@
 use std::fmt::Debug;
 use std::iter::once;
 
-#[cfg(feature = "heapless")]
-use parse_size::parse_size;
-
 use crate::FromLeStream;
-
-mod parse_size;
 
 impl FromLeStream for () {
     fn from_le_stream<T>(_: T) -> Option<Self>
@@ -157,11 +152,12 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let size: usize = usize::from_le_stream(&mut bytes)?;
-        let mut result = Self::with_capacity(size);
+        let mut result = Self::new();
 
-        for _ in 0..size {
-            result.push(<T as FromLeStream>::from_le_stream(&mut bytes)?);
+        while let Some(byte) = bytes.next() {
+            result.push(<T as FromLeStream>::from_le_stream(
+                once(byte).chain(&mut bytes),
+            )?);
         }
 
         Some(result)
@@ -177,10 +173,9 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let size: usize = parse_size::<SIZE, _>(&mut bytes)?;
         let mut result = Self::new();
 
-        for _ in 0..size {
+        for _ in 0..SIZE {
             result
                 .push(<T as FromLeStream>::from_le_stream(&mut bytes)?)
                 .unwrap_or_else(|_| unreachable!());

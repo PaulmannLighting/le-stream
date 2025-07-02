@@ -1,15 +1,9 @@
 use std::array::IntoIter;
-#[cfg(feature = "macaddr")]
-use std::iter::Rev;
 use std::iter::{empty, Empty, FlatMap};
-
-#[cfg(feature = "heapless")]
-use size_prefix_iterator::SizePrefixIterator;
 
 use crate::ToLeStream;
 
 mod option_iterator;
-mod size_prefix_iterator;
 
 impl ToLeStream for () {
     type Iter = Empty<u8>;
@@ -134,20 +128,14 @@ impl<T> ToLeStream for Vec<T>
 where
     T: ToLeStream,
 {
-    type Iter = std::iter::Chain<
-        <usize as ToLeStream>::Iter,
-        FlatMap<
-            <Self as IntoIterator>::IntoIter,
-            <T as ToLeStream>::Iter,
-            fn(T) -> <T as ToLeStream>::Iter,
-        >,
+    type Iter = FlatMap<
+        <Self as IntoIterator>::IntoIter,
+        <T as ToLeStream>::Iter,
+        fn(T) -> <T as ToLeStream>::Iter,
     >;
 
     fn to_le_stream(self) -> Self::Iter {
-        #[allow(trivial_casts)]
-        self.len()
-            .to_le_stream()
-            .chain(self.into_iter().flat_map(ToLeStream::to_le_stream as _))
+        self.into_iter().flat_map(ToLeStream::to_le_stream)
     }
 }
 
@@ -156,25 +144,20 @@ impl<T, const SIZE: usize> ToLeStream for heapless::Vec<T, SIZE>
 where
     T: ToLeStream,
 {
-    type Iter = std::iter::Chain<
-        SizePrefixIterator,
-        FlatMap<
-            <Self as IntoIterator>::IntoIter,
-            <T as ToLeStream>::Iter,
-            fn(T) -> <T as ToLeStream>::Iter,
-        >,
+    type Iter = FlatMap<
+        <Self as IntoIterator>::IntoIter,
+        <T as ToLeStream>::Iter,
+        fn(T) -> <T as ToLeStream>::Iter,
     >;
 
     fn to_le_stream(self) -> Self::Iter {
-        #[allow(trivial_casts)]
-        SizePrefixIterator::new(self.len(), SIZE)
-            .chain(self.into_iter().flat_map(ToLeStream::to_le_stream as _))
+        self.into_iter().flat_map(ToLeStream::to_le_stream)
     }
 }
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr6 {
-    type Iter = Rev<IntoIter<u8, 6>>;
+    type Iter = std::iter::Rev<IntoIter<u8, 6>>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_array().into_iter().rev()
@@ -183,7 +166,7 @@ impl ToLeStream for macaddr::MacAddr6 {
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr8 {
-    type Iter = Rev<IntoIter<u8, 8>>;
+    type Iter = std::iter::Rev<IntoIter<u8, 8>>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_array().into_iter().rev()
