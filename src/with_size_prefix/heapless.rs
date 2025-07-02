@@ -16,6 +16,7 @@ impl<const SIZE: usize, T> WithSizePrefix<Size, heapless::Vec<T, SIZE>> {
     /// # Panics
     ///
     /// Panics if the length of the vector cannot be converted to a `Size`.
+    #[must_use]
     pub fn new(data: heapless::Vec<T, SIZE>) -> Self {
         Self::try_new(data).expect("Size too lage. This is a bug.")
     }
