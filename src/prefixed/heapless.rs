@@ -4,7 +4,6 @@ pub use byte_sized_vec::ByteSizedVec;
 pub use word_sized_vec::WordSizedVec;
 
 mod byte_sized_vec;
-mod usize_vec;
 mod word_sized_vec;
 
 impl<const SIZE: usize, P, T> Prefixed<P, heapless::Vec<T, SIZE>> {
