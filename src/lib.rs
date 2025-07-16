@@ -4,10 +4,9 @@ pub use consume::Consume;
 pub use error::{Error, Result};
 pub use from_le_stream::FromLeStream;
 pub use prefixed::Prefixed;
-pub use to_le_stream::ToLeStream;
-
 #[cfg(feature = "heapless")]
 pub use prefixed::{ByteSizedVec, WordSizedVec};
+pub use to_le_stream::ToLeStream;
 
 mod consume;
 mod error;

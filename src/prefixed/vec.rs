@@ -1,7 +1,6 @@
 use std::fmt::Debug;
 
-use crate::FromLeStream;
-use crate::Prefixed;
+use crate::{FromLeStream, Prefixed};
 
 impl<P, T> Prefixed<P, Vec<T>> {
     /// Return a slice of the data contained in the vector.

@@ -1,7 +1,7 @@
-use crate::Prefixed;
-
 pub use byte_sized_vec::ByteSizedVec;
 pub use word_sized_vec::WordSizedVec;
+
+use crate::Prefixed;
 
 mod byte_sized_vec;
 mod word_sized_vec;

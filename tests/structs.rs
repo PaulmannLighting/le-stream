@@ -2,9 +2,10 @@
 
 #![cfg(all(test, feature = "derive"))]
 
+use std::iter::empty;
+
 use le_stream::derive::{FromLeStream, ToLeStream};
 use le_stream::{ByteSizedVec, Error, FromLeStream, Prefixed, ToLeStream};
-use std::iter::empty;
 
 const MY_STRUCT_BYTES: [u8; 53] = [
     0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xff, 0xaa, 0xbb, 0xcc, 0xdd, 0x34, 0x12, 0x56, 0x78,
