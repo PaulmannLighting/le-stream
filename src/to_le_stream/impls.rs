@@ -155,6 +155,15 @@ where
     }
 }
 
+#[cfg(feature = "heapless")]
+impl<const SIZE: usize> ToLeStream for heapless::String<SIZE> {
+    type Iter = <heapless::Vec<u8, SIZE> as IntoIterator>::IntoIter;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.into_bytes().into_iter()
+    }
+}
+
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr6 {
     type Iter = std::iter::Rev<IntoIter<u8, 6>>;

@@ -185,6 +185,17 @@ where
     }
 }
 
+#[cfg(feature = "heapless")]
+impl<const SIZE: usize> FromLeStream for heapless::String<SIZE> {
+    fn from_le_stream<T>(mut bytes: T) -> Option<Self>
+    where
+        T: Iterator<Item = u8>,
+    {
+        heapless::Vec::<u8, SIZE>::from_le_stream(&mut bytes)
+            .and_then(|vec| Self::from_utf8(vec).ok())
+    }
+}
+
 #[cfg(feature = "macaddr")]
 impl FromLeStream for macaddr::MacAddr6 {
     fn from_le_stream<T>(bytes: T) -> Option<Self>
