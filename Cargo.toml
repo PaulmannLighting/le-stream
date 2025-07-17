@@ -22,7 +22,7 @@ macaddr = { version = "1.0", optional = true }
 std = []
 derive = ["dep:le-stream-derive"]
 heapless = ["dep:heapless"]
-macaddr = ["dep:macaddr", "std"]
+macaddr = ["dep:macaddr"]
 
 [lints.rust]
 absolute_paths_not_starting_with_crate = "warn"

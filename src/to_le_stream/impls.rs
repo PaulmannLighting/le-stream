@@ -167,7 +167,7 @@ impl<const SIZE: usize> ToLeStream for heapless::String<SIZE> {
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr6 {
-    type Iter = std::iter::Rev<IntoIter<u8, 6>>;
+    type Iter = core::iter::Rev<IntoIter<u8, 6>>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_array().into_iter().rev()
@@ -176,7 +176,7 @@ impl ToLeStream for macaddr::MacAddr6 {
 
 #[cfg(feature = "macaddr")]
 impl ToLeStream for macaddr::MacAddr8 {
-    type Iter = std::iter::Rev<IntoIter<u8, 8>>;
+    type Iter = core::iter::Rev<IntoIter<u8, 8>>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_array().into_iter().rev()
