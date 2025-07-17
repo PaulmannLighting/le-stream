@@ -1,5 +1,5 @@
-use std::array::IntoIter;
-use std::iter::{empty, Empty, FlatMap};
+use core::array::IntoIter;
+use core::iter::{empty, Empty, FlatMap};
 
 use crate::ToLeStream;
 
@@ -124,6 +124,7 @@ where
     }
 }
 
+#[cfg(feature = "std")]
 impl<T> ToLeStream for Vec<T>
 where
     T: ToLeStream,

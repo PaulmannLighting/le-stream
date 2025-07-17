@@ -1,6 +1,6 @@
-use std::fmt::Debug;
-use std::iter::Chain;
-use std::ops::{Deref, DerefMut};
+use core::fmt::Debug;
+use core::iter::Chain;
+use core::ops::{Deref, DerefMut};
 
 use crate::ToLeStream;
 

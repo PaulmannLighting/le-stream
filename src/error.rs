@@ -1,7 +1,7 @@
-use std::fmt::{Display, Formatter};
+use core::fmt::{Display, Formatter};
 
 /// Result type with [`Error`] as error variant.
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = core::result::Result<T, Error>;
 
 /// Error type for byte stream operations.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -13,7 +13,7 @@ pub enum Error {
 }
 
 impl Display for Error {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::StreamNotExhausted(next_byte) => {
                 write!(f, "byte stream not exhausted: [{next_byte:#04X?}, ..]")
@@ -23,4 +23,4 @@ impl Display for Error {
     }
 }
 
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}

@@ -1,4 +1,6 @@
-use std::fmt::Debug;
+#![cfg(feature = "std")]
+
+use core::fmt::Debug;
 
 use crate::{FromLeStream, Prefixed};
 

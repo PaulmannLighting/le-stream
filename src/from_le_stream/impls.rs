@@ -1,5 +1,4 @@
-use std::fmt::Debug;
-use std::iter::once;
+use core::iter::once;
 
 use crate::FromLeStream;
 
@@ -144,9 +143,10 @@ where
     }
 }
 
+#[cfg(feature = "std")]
 impl<T> FromLeStream for Vec<T>
 where
-    T: Debug + FromLeStream,
+    T: FromLeStream,
 {
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
