@@ -176,8 +176,14 @@ where
         let mut result = Self::new();
 
         for _ in 0..SIZE {
+            let Some(byte) = bytes.next() else {
+                break;
+            };
+
             result
-                .push(<T as FromLeStream>::from_le_stream(&mut bytes)?)
+                .push(<T as FromLeStream>::from_le_stream(
+                    once(byte).chain(&mut bytes),
+                )?)
                 .unwrap_or_else(|_| unreachable!());
         }
 
