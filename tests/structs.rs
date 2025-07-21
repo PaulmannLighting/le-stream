@@ -1,6 +1,6 @@
 //! Tests for the `FromLeStream` and `ToLeStream` traits on structs.
 
-#![cfg(all(test, feature = "derive", feature = "heapless"))]
+#![cfg(all(test, feature = "derive", feature = "heapless", feature = "std"))]
 
 use std::iter::empty;
 
