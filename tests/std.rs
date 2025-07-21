@@ -1,16 +1,17 @@
 //! Tests for the `FromLeStream` and `ToLeStream` traits on structs.
 
-#![cfg(all(test, feature = "derive",))]
+#![cfg(all(test, feature = "derive", feature = "std"))]
 
 use std::iter::empty;
 
 use le_stream::derive::{FromLeStream, ToLeStream};
-use le_stream::{Error, FromLeStream, ToLeStream};
+use le_stream::{ByteSizedVec, Error, FromLeStream, Prefixed, ToLeStream};
 
-const MY_STRUCT_BYTES: [u8; 39] = [
+const MY_STRUCT_BYTES: [u8; 49] = [
     0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xff, 0xaa, 0xbb, 0xcc, 0xdd, 0x34, 0x12, 0x56, 0x78,
     0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc, 0x00, 0x42,
-    0x37, 0x13, 0x12, 0x42, 0x37, 0x13, 0x12,
+    0x37, 0x13, 0x12, 0x42, 0x37, 0x13, 0x12, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xab,
+    0xcd,
 ];
 
 #[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -29,6 +30,7 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
+    vec: Prefixed<usize, Vec<u8>>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -46,6 +48,7 @@ fn deserialize_struct() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
 }
 
 #[test]
@@ -80,6 +83,7 @@ fn serialize_struct() {
         ],
         is_working: false,
         size: 0x1213_3742_1213_3742,
+        vec: vec![0xab, 0xcd].try_into().unwrap(),
     };
 
     assert_eq!(
@@ -107,6 +111,7 @@ fn deserialize_struct_exact() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
 }
 
 #[test]
@@ -129,7 +134,8 @@ fn deserialize_excess_exact() {
     let bytes = [
         0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xff, 0xaa, 0xbb, 0xcc, 0xdd, 0x34, 0x12, 0x56,
         0x78, 0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc,
-        0x00, 0x42, 0x37, 0x13, 0x12, 0x42, 0x37, 0x13, 0x12, EXTRA_BYTE, TAIL,
+        0x00, 0x42, 0x37, 0x13, 0x12, 0x42, 0x37, 0x13, 0x12, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0xab, 0xcd, EXTRA_BYTE, TAIL,
     ];
     let mut iter = bytes.into_iter();
     assert_eq!(
@@ -187,4 +193,5 @@ fn deserialize_from_slice() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
+    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
 }
