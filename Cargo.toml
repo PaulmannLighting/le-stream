@@ -15,6 +15,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 heapless = { version = "0.8", optional = true }
+intx = { version = "0.1.0", optional = true }
 le-stream-derive = { version = "0.4", optional = true }
 macaddr = { version = "1.0", optional = true }
 
@@ -23,6 +24,7 @@ std = []
 derive = ["dep:le-stream-derive"]
 heapless = ["dep:heapless"]
 macaddr = ["dep:macaddr"]
+intx = ["dep:intx"]
 
 [lints.rust]
 absolute_paths_not_starting_with_crate = "warn"

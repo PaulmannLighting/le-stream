@@ -1,4 +1,5 @@
 mod impls;
+mod intx;
 
 /// Convert an object to a stream of bytes with little endianness.
 pub trait ToLeStream
