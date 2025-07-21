@@ -1,6 +1,6 @@
 use crate::ToLeStream;
 
-pub struct OptionIterator<T>(Option<<T as ToLeStream>::Iter>)
+pub struct OptionIterator<T>(Option<T::Iter>)
 where
     T: ToLeStream;
 

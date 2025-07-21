@@ -1,7 +1,10 @@
 use crate::{Error, Result};
 
-mod impls;
+mod core;
+mod heapless;
 mod intx;
+mod macaddr;
+mod std;
 
 /// Parse an object from a stream of bytes with little endianness.
 pub trait FromLeStream: Sized {

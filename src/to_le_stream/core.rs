@@ -105,11 +105,10 @@ impl<T, const SIZE: usize> ToLeStream for [T; SIZE]
 where
     T: ToLeStream,
 {
-    type Iter =
-        FlatMap<IntoIter<T, SIZE>, <T as ToLeStream>::Iter, fn(T) -> <T as ToLeStream>::Iter>;
+    type Iter = FlatMap<IntoIter<T, SIZE>, T::Iter, fn(T) -> T::Iter>;
 
     fn to_le_stream(self) -> Self::Iter {
-        self.into_iter().flat_map(<T as ToLeStream>::to_le_stream)
+        self.into_iter().flat_map(T::to_le_stream)
     }
 }
 
@@ -121,64 +120,5 @@ where
 
     fn to_le_stream(self) -> Self::Iter {
         option_iterator::OptionIterator::new(self)
-    }
-}
-
-#[cfg(feature = "std")]
-impl<T> ToLeStream for Vec<T>
-where
-    T: ToLeStream,
-{
-    type Iter = FlatMap<
-        <Self as IntoIterator>::IntoIter,
-        <T as ToLeStream>::Iter,
-        fn(T) -> <T as ToLeStream>::Iter,
-    >;
-
-    fn to_le_stream(self) -> Self::Iter {
-        self.into_iter().flat_map(ToLeStream::to_le_stream)
-    }
-}
-
-#[cfg(feature = "heapless")]
-impl<T, const SIZE: usize> ToLeStream for heapless::Vec<T, SIZE>
-where
-    T: ToLeStream,
-{
-    type Iter = FlatMap<
-        <Self as IntoIterator>::IntoIter,
-        <T as ToLeStream>::Iter,
-        fn(T) -> <T as ToLeStream>::Iter,
-    >;
-
-    fn to_le_stream(self) -> Self::Iter {
-        self.into_iter().flat_map(ToLeStream::to_le_stream)
-    }
-}
-
-#[cfg(feature = "heapless")]
-impl<const SIZE: usize> ToLeStream for heapless::String<SIZE> {
-    type Iter = <heapless::Vec<u8, SIZE> as IntoIterator>::IntoIter;
-
-    fn to_le_stream(self) -> Self::Iter {
-        self.into_bytes().into_iter()
-    }
-}
-
-#[cfg(feature = "macaddr")]
-impl ToLeStream for macaddr::MacAddr6 {
-    type Iter = core::iter::Rev<IntoIter<u8, 6>>;
-
-    fn to_le_stream(self) -> Self::Iter {
-        self.into_array().into_iter().rev()
-    }
-}
-
-#[cfg(feature = "macaddr")]
-impl ToLeStream for macaddr::MacAddr8 {
-    type Iter = core::iter::Rev<IntoIter<u8, 8>>;
-
-    fn to_le_stream(self) -> Self::Iter {
-        self.into_array().into_iter().rev()
     }
 }
