@@ -1,14 +1,5 @@
 use crate::FromLeStream;
 
-/// Indicates an error when parsing an object from a stream of bytes with little endianness with a leading tag.
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub enum FromLeStreamTaggedError<T> {
-    /// The tag is invalid.
-    InvalidTag(T),
-    /// The byte stream terminated prematurely.
-    UnexpectedEndOfStream,
-}
-
 /// Parse an object from a stream of bytes with little endianness with a leading tag.
 pub trait FromLeStreamTagged: Sized {
     /// The prefixed tag type.
@@ -18,11 +9,8 @@ pub trait FromLeStreamTagged: Sized {
     ///
     /// # Errors
     ///
-    /// Returns an [`FromLeStreamTaggedError`] if the tag is invalid or the stream terminates prematurely.
-    fn from_le_stream_tagged<T>(
-        tag: Self::Tag,
-        bytes: T,
-    ) -> Result<Self, FromLeStreamTaggedError<Self::Tag>>
+    /// Returns the tag if it is invalid.
+    fn from_le_stream_tagged<T>(tag: Self::Tag, bytes: T) -> Result<Option<Self>, Self::Tag>
     where
         T: Iterator<Item = u8>;
 }
@@ -35,6 +23,8 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        T::from_le_stream_tagged(T::Tag::from_le_stream(&mut bytes)?, bytes).ok()
+        T::from_le_stream_tagged(T::Tag::from_le_stream(&mut bytes)?, bytes)
+            .ok()
+            .flatten()
     }
 }
