@@ -20,5 +20,5 @@ mod to_le_stream;
 /// Re-export the `FromLeBytes` and `ToLeBytes` derive macros.
 #[cfg(feature = "derive")]
 pub mod derive {
-    pub use le_stream_derive::{FromLeStream, ToLeStream};
+    pub use le_stream_derive::{FromLeStream, FromLeStreamTagged, ToLeStream};
 }
