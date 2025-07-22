@@ -22,9 +22,9 @@ pub trait FromLeStreamTagged: Sized {
     /// # Errors
     ///
     /// Returns an [`FromLeStreamTaggedError`] if the tag is invalid or the stream terminates prematurely.
-    fn from_le_stream_tagged<I>(tag: Self::Tag, bytes: I) -> Result<Self>
+    fn from_le_stream_tagged<T>(tag: Self::Tag, bytes: T) -> Result<Self>
     where
-        I: Iterator<Item = u8>;
+        T: Iterator<Item = u8>;
 }
 
 impl<T> FromLeStream for T
