@@ -1,8 +1,5 @@
 use crate::FromLeStream;
 
-/// Internal result type.
-type Result<T> = core::result::Result<T, FromLeStreamTaggedError<<T as FromLeStreamTagged>::Tag>>;
-
 /// Indicates an error when parsing an object from a stream of bytes with little endianness with a leading tag.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum FromLeStreamTaggedError<T> {
@@ -22,7 +19,10 @@ pub trait FromLeStreamTagged: Sized {
     /// # Errors
     ///
     /// Returns an [`FromLeStreamTaggedError`] if the tag is invalid or the stream terminates prematurely.
-    fn from_le_stream_tagged<T>(tag: Self::Tag, bytes: T) -> Result<Self>
+    fn from_le_stream_tagged<T>(
+        tag: Self::Tag,
+        bytes: T,
+    ) -> Result<Self, FromLeStreamTaggedError<Self::Tag>>
     where
         T: Iterator<Item = u8>;
 }
