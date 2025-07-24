@@ -1,7 +1,7 @@
 #![cfg(feature = "heapless")]
 
 use core::iter::Chain;
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 use crate::{FromLeStream, Prefixed, ToLeStream};
 

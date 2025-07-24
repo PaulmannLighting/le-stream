@@ -2,7 +2,7 @@
 
 #![cfg(all(test, feature = "derive", feature = "heapless"))]
 
-use std::iter::empty;
+use core::iter::empty;
 
 use le_stream::derive::{FromLeStream, ToLeStream};
 use le_stream::{ByteSizedVec, Error, FromLeStream, Prefixed, ToLeStream};

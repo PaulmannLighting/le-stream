@@ -1,8 +1,8 @@
 #![cfg(feature = "std")]
 
+use core::fmt::Debug;
 use core::iter::Chain;
-use std::fmt::Debug;
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 use crate::{FromLeStream, Prefixed, ToLeStream};
 
