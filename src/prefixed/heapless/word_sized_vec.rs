@@ -1,4 +1,4 @@
-use std::iter::Chain;
+use core::iter::Chain;
 
 use crate::{FromLeStream, Prefixed, ToLeStream};
 
