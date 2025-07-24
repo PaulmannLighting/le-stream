@@ -21,7 +21,7 @@ impl<P, D> Prefixed<P, D> {
     /// Create a new `Prefixed` instance with the given data.
     #[must_use]
     pub const fn new(data: D) -> Self {
-        Prefixed {
+        Self {
             prefix: PhantomData,
             data,
         }
