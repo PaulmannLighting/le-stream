@@ -55,11 +55,11 @@ impl<T> From<Box<[T]>> for Prefixed<usize, Box<[T]>> {
 }
 
 impl<T> TryFrom<Box<[T]>> for Prefixed<u8, Box<[T]>> {
-    type Error = ();
+    type Error = Box<[T]>;
 
     fn try_from(data: Box<[T]>) -> Result<Self, Self::Error> {
         if data.len() > usize::from(u8::MAX) {
-            return Err(());
+            return Err(data);
         }
 
         Ok(Self {
