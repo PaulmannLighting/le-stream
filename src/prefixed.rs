@@ -11,6 +11,7 @@ mod vec;
 
 /// A wrapper type that adds a size prefix to the data it contains.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[repr(transparent)]
 pub struct Prefixed<P, D> {
     prefix: PhantomData<P>,
     data: D,
