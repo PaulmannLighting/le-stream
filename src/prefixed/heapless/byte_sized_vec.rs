@@ -1,24 +1,9 @@
-use crate::{FromLeStream, Prefixed};
+use core::iter::Chain;
+
+use crate::{FromLeStream, Prefixed, ToLeStream};
 
 /// A vector with a prefix of type [`u8`] that can hold up to [`u8::MAX`] elements.
 pub type ByteSizedVec<T> = heapless::Vec<T, { u8::MAX as usize }>;
-
-impl<T> Prefixed<u8, ByteSizedVec<T>> {
-    /// Create a new prefixed vec from a heapless Vec.
-    pub fn new(data: ByteSizedVec<T>) -> Self {
-        Self {
-            #[allow(clippy::cast_possible_truncation)]
-            prefix: data.len() as u8,
-            data,
-        }
-    }
-}
-
-impl<T> From<ByteSizedVec<T>> for Prefixed<u8, ByteSizedVec<T>> {
-    fn from(vec: ByteSizedVec<T>) -> Self {
-        Self::new(vec)
-    }
-}
 
 impl<T> FromLeStream for Prefixed<u8, ByteSizedVec<T>>
 where
@@ -37,6 +22,20 @@ where
                 .unwrap_or_else(|_| unreachable!());
         }
 
-        Some(Self { prefix: size, data })
+        Some(Self::new(data))
+    }
+}
+
+impl<T> ToLeStream for Prefixed<u8, ByteSizedVec<T>>
+where
+    T: ToLeStream,
+{
+    type Iter = Chain<<u8 as ToLeStream>::Iter, <ByteSizedVec<T> as ToLeStream>::Iter>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        #[allow(clippy::cast_possible_truncation)]
+        (self.data.len() as u8)
+            .to_le_stream()
+            .chain(self.data.to_le_stream())
     }
 }

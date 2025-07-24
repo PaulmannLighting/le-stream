@@ -1,24 +1,9 @@
-use crate::{FromLeStream, Prefixed};
+use std::iter::Chain;
+
+use crate::{FromLeStream, Prefixed, ToLeStream};
 
 /// A vector with a prefix of type [`u16`] that can hold up to [`u16::MAX`] elements.
 pub type WordSizedVec<T> = heapless::Vec<T, { u16::MAX as usize }>;
-
-impl<T> Prefixed<u16, WordSizedVec<T>> {
-    /// Create a new prefixed vec from a heapless Vec.
-    pub fn new(data: WordSizedVec<T>) -> Self {
-        Self {
-            #[allow(clippy::cast_possible_truncation)]
-            prefix: data.len() as u16,
-            data,
-        }
-    }
-}
-
-impl<T> From<WordSizedVec<T>> for Prefixed<u16, WordSizedVec<T>> {
-    fn from(vec: WordSizedVec<T>) -> Self {
-        Self::new(vec)
-    }
-}
 
 impl<T> FromLeStream for Prefixed<u16, WordSizedVec<T>>
 where
@@ -37,6 +22,20 @@ where
                 .unwrap_or_else(|_| unreachable!());
         }
 
-        Some(Self { prefix: size, data })
+        Some(Self::new(data))
+    }
+}
+
+impl<T> ToLeStream for Prefixed<u16, WordSizedVec<T>>
+where
+    T: ToLeStream,
+{
+    type Iter = Chain<<u16 as ToLeStream>::Iter, <WordSizedVec<T> as ToLeStream>::Iter>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        #[allow(clippy::cast_possible_truncation)]
+        (self.data.len() as u16)
+            .to_le_stream()
+            .chain(self.data.to_le_stream())
     }
 }

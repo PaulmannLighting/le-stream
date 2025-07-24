@@ -1,43 +1,14 @@
 #![cfg(feature = "std")]
 
-use core::fmt::Debug;
+use core::iter::Chain;
 
-use crate::{FromLeStream, Prefixed};
+use crate::{FromLeStream, Prefixed, ToLeStream};
 
 impl<P, T> Prefixed<P, Vec<T>> {
     /// Return a slice of the data contained in the vector.
+    #[must_use]
     pub const fn as_slice(&self) -> &[T] {
         self.data.as_slice()
-    }
-}
-
-impl<P, T> Prefixed<P, Vec<T>>
-where
-    P: TryFrom<usize>,
-{
-    /// Create a new `WithSizePrefix` from a `Vec` if the size is valid.
-    ///
-    /// # Errors
-    ///
-    /// Returns an error if the length of the vector cannot be converted to `P`.
-    pub fn try_new(data: Vec<T>) -> Result<Self, P::Error> {
-        P::try_from(data.len()).map(|prefix| Self { prefix, data })
-    }
-}
-
-impl<P, T> Prefixed<P, Vec<T>>
-where
-    P: TryFrom<usize>,
-    P::Error: Debug,
-{
-    /// Create a new `WithSizePrefix` with the given data.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the length of the vector cannot be converted to `P`.
-    #[must_use]
-    pub fn new(data: Vec<T>) -> Self {
-        Self::try_new(data).expect("Size too lage. This is a bug.")
     }
 }
 
@@ -59,17 +30,20 @@ where
             data.push(T::from_le_stream(&mut bytes)?);
         }
 
-        Some(Self { prefix, data })
+        Some(Self::new(data))
     }
 }
 
-impl<P, T> TryFrom<Vec<T>> for Prefixed<P, Vec<T>>
+impl<P, T> ToLeStream for Prefixed<P, Vec<T>>
 where
-    P: TryFrom<usize>,
+    P: From<usize> + ToLeStream,
+    T: ToLeStream,
 {
-    type Error = P::Error;
+    type Iter = Chain<P::Iter, <Vec<T> as ToLeStream>::Iter>;
 
-    fn try_from(data: Vec<T>) -> Result<Self, Self::Error> {
-        P::try_from(data.len()).map(|prefix| Self { prefix, data })
+    fn to_le_stream(self) -> Self::Iter {
+        P::from(self.data.len())
+            .to_le_stream()
+            .chain(self.data.to_le_stream())
     }
 }
