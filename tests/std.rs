@@ -30,7 +30,7 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
-    vec: Prefixed<usize, Vec<u8>>,
+    vec: Prefixed<usize, Box<[u8]>>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -48,7 +48,10 @@ fn deserialize_struct() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(
+        my_struct.vec.into_data(),
+        vec![0xAB, 0xCD].into_boxed_slice()
+    );
 }
 
 #[test]
@@ -83,7 +86,7 @@ fn serialize_struct() {
         ],
         is_working: false,
         size: 0x1213_3742_1213_3742,
-        vec: vec![0xab, 0xcd].try_into().unwrap(),
+        vec: vec![0xab, 0xcd].into_boxed_slice().into(),
     };
 
     assert_eq!(
@@ -111,7 +114,10 @@ fn deserialize_struct_exact() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(
+        my_struct.vec.into_data(),
+        vec![0xAB, 0xCD].into_boxed_slice()
+    );
 }
 
 #[test]
@@ -193,5 +199,8 @@ fn deserialize_from_slice() {
     assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
     assert!(!my_struct.is_working);
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-    assert_eq!(my_struct.vec.into_data(), vec![0xAB, 0xCD]);
+    assert_eq!(
+        my_struct.vec.into_data(),
+        vec![0xAB, 0xCD].into_boxed_slice()
+    );
 }

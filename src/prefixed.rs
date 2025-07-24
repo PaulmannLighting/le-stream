@@ -3,11 +3,10 @@ use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
 
 #[cfg(feature = "heapless")]
-mod heapless;
-#[cfg(feature = "heapless")]
-pub use heapless::{ByteSizedVec, WordSizedVec};
+pub use heapless::ByteSizedVec;
 
-mod vec;
+mod heapless;
+mod std;
 
 /// A wrapper type that adds a size prefix to the data it contains.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -18,15 +17,6 @@ pub struct Prefixed<P, D> {
 }
 
 impl<P, D> Prefixed<P, D> {
-    /// Create a new `Prefixed` instance with the given data.
-    #[must_use]
-    pub const fn new(data: D) -> Self {
-        Self {
-            data,
-            prefix: PhantomData,
-        }
-    }
-
     /// Extract the data.
     pub fn into_data(self) -> D {
         self.data
@@ -70,11 +60,5 @@ where
 {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.data
-    }
-}
-
-impl<P, D> From<D> for Prefixed<P, D> {
-    fn from(data: D) -> Self {
-        Self::new(data)
     }
 }

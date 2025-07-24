@@ -21,3 +21,15 @@ where
         Some(result)
     }
 }
+
+impl<T> FromLeStream for Box<[T]>
+where
+    T: FromLeStream,
+{
+    fn from_le_stream<I>(mut bytes: I) -> Option<Self>
+    where
+        I: Iterator<Item = u8>,
+    {
+        Vec::from_le_stream(&mut bytes).map(Vec::into_boxed_slice)
+    }
+}
