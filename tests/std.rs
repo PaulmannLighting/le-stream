@@ -1,6 +1,6 @@
 //! Tests for the `FromLeStream` and `ToLeStream` traits on structs.
 
-#![cfg(all(test, feature = "derive", feature = "std"))]
+#![cfg(all(test, feature = "derive"))]
 
 use core::iter::empty;
 
