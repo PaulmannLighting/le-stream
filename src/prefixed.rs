@@ -13,8 +13,8 @@ mod vec;
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct Prefixed<P, D> {
-    prefix: PhantomData<P>,
     data: D,
+    prefix: PhantomData<P>,
 }
 
 impl<P, D> Prefixed<P, D> {
@@ -22,8 +22,8 @@ impl<P, D> Prefixed<P, D> {
     #[must_use]
     pub const fn new(data: D) -> Self {
         Self {
-            prefix: PhantomData,
             data,
+            prefix: PhantomData,
         }
     }
 
