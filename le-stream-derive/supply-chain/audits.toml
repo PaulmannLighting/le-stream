@@ -1,7 +1,0 @@
-
-# cargo-vet audits file
-
-[[audits.le-stream-derive]]
-who = "Richard Neumann <neumann@paulmann.de>"
-criteria = "safe-to-deploy"
-version = "0.4.2"
