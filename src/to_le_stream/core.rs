@@ -1,11 +1,20 @@
 use core::array::IntoIter;
-use core::iter::{empty, Empty, FlatMap};
+use core::iter::{Empty, FlatMap, empty};
+use core::marker::PhantomData;
 
 use crate::ToLeStream;
 
 mod option_iterator;
 
 impl ToLeStream for () {
+    type Iter = Empty<u8>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        empty()
+    }
+}
+
+impl<T> ToLeStream for PhantomData<T> {
     type Iter = Empty<u8>;
 
     fn to_le_stream(self) -> Self::Iter {

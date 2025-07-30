@@ -1,4 +1,5 @@
 use core::iter::once;
+use core::marker::PhantomData;
 
 use crate::FromLeStream;
 
@@ -8,6 +9,15 @@ impl FromLeStream for () {
         T: Iterator<Item = u8>,
     {
         Some(())
+    }
+}
+
+impl<T> FromLeStream for PhantomData<T> {
+    fn from_le_stream<I>(_: I) -> Option<Self>
+    where
+        I: Iterator<Item = u8>,
+    {
+        Some(Self)
     }
 }
 
