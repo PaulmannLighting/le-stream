@@ -1,31 +1,13 @@
-[package]
-name = "le-stream"
-version = "3.6.4"
-description = "De-/serialize objects from/to little endian byte streams"
-authors = ["Richard Neumann <neumann@paulmann.de>"]
-license = "MIT"
-repository = "https://github.com/PaulmannLighting/le-stream"
-documentation = "https://docs.rs/le-stream"
-keywords = ["little", "endian", "byte", "stream"]
-categories = ["encoding"]
-edition = "2024"
-exclude = [".gitignore"]
+[workspace]
+resolver = "3"
+members = ["le-stream", "le-stream-derive"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+opt-level = 3
+lto = true
+panic = "abort"
 
-[dependencies]
-heapless = { version = "0.8", optional = true }
-intx = { version = "0.1", optional = true }
-le-stream-derive = { version = "1", optional = true }
-macaddr = { version = "1.0", optional = true }
-
-[features]
-derive = ["dep:le-stream-derive"]
-heapless = ["dep:heapless"]
-macaddr = ["dep:macaddr"]
-intx = ["dep:intx"]
-
-[lints.rust]
+[workspace.lints.rust]
 absolute_paths_not_starting_with_crate = "warn"
 elided_lifetimes_in_paths = "warn"
 keyword_idents = { level = "warn", priority = -1 }
@@ -44,7 +26,7 @@ variant_size_differences = "warn"
 for_loops_over_fallibles = "warn"
 redundant_lifetimes = "warn"
 
-[lints.clippy]
+[workspace.lints.clippy]
 pedantic = { level = "warn", priority = -90 }
 nursery = { level = "warn", priority = -95 }
 perf = { level = "warn", priority = -95 }
@@ -74,11 +56,3 @@ useless_let_if_seq = "warn"
 rc_buffer = "warn"
 rc_mutex = "warn"
 read_zero_byte_vec = "warn"
-redundant_clone = "warn"
-redundant_type_annotations = "warn"
-string_add = "warn"
-string_slice = "warn"
-string_to_string = "warn"
-trailing_empty_array = "warn"
-transmute_undefined_repr = "warn"
-unnecessary_self_imports = "warn"

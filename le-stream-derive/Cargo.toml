@@ -1,0 +1,25 @@
+[package]
+name = "le-stream-derive"
+version = "1.0.0"
+description = "Derive macros to de-/serialize objects from/to little endian byte streams"
+authors = ["Richard Neumann <neumann@paulmann.de>"]
+license = "MIT"
+repository = "https://github.com/PaulmannLighting/le-stream-derive"
+documentation = "https://docs.rs/le-stream-derive"
+keywords = ["little", "endian", "byte", "stream"]
+categories = ["encoding"]
+edition = "2021"
+exclude = [".gitignore"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = "2.0"
+
+[lib]
+proc-macro = true
+
+[lints]
+workspace = true
