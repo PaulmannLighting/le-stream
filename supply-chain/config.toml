@@ -10,10 +10,10 @@ url = "https://raw.githubusercontent.com/google/supply-chain/main/audits.toml"
 [imports.mozilla]
 url = "https://raw.githubusercontent.com/mozilla/supply-chain/main/audits.toml"
 
-[imports.paulmann]
-url = "https://raw.githubusercontent.com/PaulmannLighting/le-stream-derive/refs/heads/main/supply-chain/audits.toml"
-
 [policy.le-stream]
+audit-as-crates-io = true
+
+[policy."le-stream-derive:1.0.0"]
 audit-as-crates-io = true
 
 [[exemptions.hash32]]
@@ -24,10 +24,26 @@ criteria = "safe-to-deploy"
 version = "0.8.0"
 criteria = "safe-to-deploy"
 
+[[exemptions.intx]]
+version = "0.1.0"
+criteria = "safe-to-deploy"
+
+[[exemptions.le-stream]]
+version = "3.6.4"
+criteria = "safe-to-deploy"
+
+[[exemptions.le-stream-derive]]
+version = "1.0.0"
+criteria = "safe-to-deploy"
+
 [[exemptions.macaddr]]
 version = "1.0.1"
 criteria = "safe-to-deploy"
 
+[[exemptions.proc-macro2]]
+version = "1.0.95"
+criteria = "safe-to-deploy"
+
 [[exemptions.syn]]
-version = "2.0.79"
+version = "2.0.104"
 criteria = "safe-to-deploy"
