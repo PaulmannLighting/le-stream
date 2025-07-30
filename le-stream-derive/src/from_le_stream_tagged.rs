@@ -1,6 +1,8 @@
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
-use syn::{parse_macro_input, Data, DeriveInput, Fields};
+use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields};
+
+use crate::add_trait_bounds;
 
 pub fn from_le_stream_tagged(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -11,7 +13,8 @@ pub fn from_le_stream_tagged(input: proc_macro::TokenStream) -> proc_macro::Toke
         .find_map(|attr| attr.parse_args().ok())
         .expect("`#[repr(T)]` is required");
     let name = input.ident;
-    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+    let generics = add_trait_bounds(input.generics, &parse_quote!(::le_stream::FromLeStream));
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     let body = impl_body(input.data);
     let expanded = quote! {
         impl #impl_generics ::le_stream::FromLeStreamTagged for #name #ty_generics #where_clause {
