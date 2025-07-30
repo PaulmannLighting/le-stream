@@ -1,14 +1,11 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields};
-
-use crate::add_trait_bounds;
+use syn::{parse_macro_input, Data, DeriveInput, Fields};
 
 pub fn from_le_stream(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let name = input.ident;
-    let generics = add_trait_bounds(input.generics, &parse_quote!(::le_stream::FromLeStream));
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     let body = impl_body(input.data);
     let expanded = quote! {
         impl #impl_generics ::le_stream::FromLeStream for #name #ty_generics #where_clause {

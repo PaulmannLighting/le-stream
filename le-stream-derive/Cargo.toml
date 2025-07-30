@@ -1,6 +1,6 @@
 [package]
 name = "le-stream-derive"
-version = "1.0.0"
+version = "1.1.0"
 description = "Derive macros to de-/serialize objects from/to little endian byte streams"
 authors = ["Richard Neumann <neumann@paulmann.de>"]
 license = "MIT"
