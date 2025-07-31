@@ -45,7 +45,7 @@ where
 
 impl<P, D> Deref for Prefixed<P, D>
 where
-    D: Deref<Target: ?Sized>,
+    D: Deref,
 {
     type Target = D::Target;
 
