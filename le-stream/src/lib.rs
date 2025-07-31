@@ -10,6 +10,7 @@ pub use from_le_stream_tagged::FromLeStreamTagged;
 pub use prefixed::ByteSizedVec;
 pub use prefixed::Prefixed;
 pub use to_le_stream::ToLeStream;
+pub use try_from_le_stream::TryFromLeStream;
 
 mod consume;
 mod error;
@@ -17,6 +18,7 @@ mod from_le_stream;
 mod from_le_stream_tagged;
 mod prefixed;
 mod to_le_stream;
+mod try_from_le_stream;
 
 /// Re-export the `FromLeBytes` and `ToLeBytes` derive macros.
 #[cfg(feature = "derive")]
