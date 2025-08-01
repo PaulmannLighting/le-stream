@@ -2,7 +2,7 @@ use extend::Extend;
 use iterator_tokens::IteratorTokens;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields, Ident};
+use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields, Ident, Index};
 
 use crate::{add_trait_bounds, get_repr_type};
 
@@ -130,6 +130,7 @@ fn iterator_for_fields(fields: &Fields, prefix: Option<&Ident>) -> IteratorToken
         Fields::Unnamed(fields) => {
             for (index, field) in fields.unnamed.iter().enumerate() {
                 if let Some(prefix) = prefix {
+                    let index = Index::from(index);
                     iterator.extend(quote! { #prefix.#index }, &field.ty);
                 } else {
                     iterator.extend(param(index), &field.ty);
