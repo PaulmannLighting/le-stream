@@ -15,11 +15,10 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let size = P::from_le_stream(&mut bytes)?;
+        let size: usize = P::from_le_stream(&mut bytes)?.into();
+        let mut data = Vec::with_capacity(size);
 
-        let mut data = Vec::new();
-
-        for _ in 0..Into::<usize>::into(size) {
+        for _ in 0..size {
             data.push(T::from_le_stream(&mut bytes)?);
         }
 
