@@ -8,9 +8,6 @@ use log::{error, warn};
 
 use crate::{FromLeStream, Prefixed, ToLeStream};
 
-/// A vector with a prefix of type [`u8`] that can hold up to [`u8::MAX`] elements.
-pub type ByteSizedVec<T> = heapless::Vec<T, { u8::MAX as usize }>;
-
 impl<T, const CAPACITY: usize> Prefixed<u8, heapless::Vec<T, CAPACITY>> {
     /// Create a new `Prefixed<u8, ByteSizedVec<T>>` with the given data.
     #[must_use]
@@ -54,8 +51,8 @@ where
     type Iter = Chain<<u8 as ToLeStream>::Iter, <heapless::Vec<T, CAPACITY> as ToLeStream>::Iter>;
 
     fn to_le_stream(self) -> Self::Iter {
-        #[allow(clippy::cast_possible_truncation)]
-        (self.data.len() as u8)
+        u8::try_from(self.len())
+            .expect("Vector size exceeds u8 capacity.")
             .to_le_stream()
             .chain(self.data.to_le_stream())
     }

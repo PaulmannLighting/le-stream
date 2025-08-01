@@ -2,9 +2,6 @@ use core::fmt::Debug;
 use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
 
-#[cfg(feature = "heapless")]
-pub use heapless::ByteSizedVec;
-
 mod heapless;
 mod std;
 

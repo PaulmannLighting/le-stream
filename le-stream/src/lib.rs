@@ -1,4 +1,5 @@
 //! A library for reading and writing data in little-endian byte order.
+
 #![no_std]
 extern crate alloc;
 
@@ -6,8 +7,6 @@ pub use consume::Consume;
 pub use error::{Error, Result};
 pub use from_le_stream::FromLeStream;
 pub use from_le_stream_tagged::FromLeStreamTagged;
-#[cfg(feature = "heapless")]
-pub use prefixed::ByteSizedVec;
 pub use prefixed::Prefixed;
 pub use to_le_stream::ToLeStream;
 pub use try_from_le_stream::TryFromLeStream;

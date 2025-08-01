@@ -5,7 +5,7 @@
 use core::iter::empty;
 
 use le_stream::derive::{FromLeStream, ToLeStream};
-use le_stream::{ByteSizedVec, Error, FromLeStream, Prefixed, ToLeStream};
+use le_stream::{Error, FromLeStream, Prefixed, ToLeStream};
 
 const MY_STRUCT_BYTES: [u8; 43] = [
     0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xff, 0xaa, 0xbb, 0xcc, 0xdd, 0x34, 0x12, 0x56, 0x78,
@@ -29,7 +29,7 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
-    heapless_vec: Prefixed<u8, ByteSizedVec<u8>>,
+    heapless_vec: Prefixed<u8, heapless::Vec<u8, 32>>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
@@ -82,7 +82,7 @@ fn serialize_struct() {
         ],
         is_working: false,
         size: 0x1213_3742_1213_3742,
-        heapless_vec: ByteSizedVec::try_from([0x01, 0x02, 0x03].as_slice())
+        heapless_vec: heapless::Vec::try_from([0x01, 0x02, 0x03].as_slice())
             .unwrap()
             .into(),
     };
