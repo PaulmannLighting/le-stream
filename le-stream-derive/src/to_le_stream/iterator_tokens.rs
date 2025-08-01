@@ -47,7 +47,7 @@ impl Extend for Option<IteratorTokens> {
             iterator.extend(field, typ);
         } else {
             self.replace(IteratorTokens {
-                statement: quote! { <#typ as ::le_stream::ToLeStream >::to_le_stream(self.#field) },
+                statement: quote! { <#typ as ::le_stream::ToLeStream >::to_le_stream(#field) },
                 typ: quote! { <#typ as ::le_stream::ToLeStream >::Iter },
             });
         }

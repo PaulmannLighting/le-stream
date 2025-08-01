@@ -12,7 +12,7 @@ pub fn from_le_stream(input: proc_macro::TokenStream) -> proc_macro::TokenStream
     let name = input.ident;
     let generics = add_trait_bounds(input.generics, &parse_quote!(::le_stream::FromLeStream));
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-    let body = impl_body(input.data, repr_type);
+    let body = impl_body(input.data, &name, repr_type);
     let expanded = quote! {
         impl #impl_generics ::le_stream::FromLeStream for #name #ty_generics #where_clause {
             fn from_le_stream<__LeStreamBytesIterator>(mut bytes: __LeStreamBytesIterator) -> ::core::option::Option<Self>
@@ -27,7 +27,7 @@ pub fn from_le_stream(input: proc_macro::TokenStream) -> proc_macro::TokenStream
     proc_macro::TokenStream::from(expanded)
 }
 
-fn impl_body(data: Data, repr_type: Option<Ident>) -> TokenStream {
+fn impl_body(data: Data, name: &Ident, repr_type: Option<Ident>) -> TokenStream {
     match data {
         Data::Struct(structure) => impl_fields(structure.fields, &quote! { Self }),
         Data::Enum(enumeration) => {
@@ -38,10 +38,10 @@ fn impl_body(data: Data, repr_type: Option<Ident>) -> TokenStream {
             let mut match_arms = TokenStream::new();
 
             for variant in enumeration.variants {
+                let variant_ident = variant.ident;
                 let (_, discriminant) = variant
                     .discriminant
-                    .expect("enum variant has no discriminant");
-                let variant_ident = variant.ident;
+                    .unwrap_or_else(|| panic!("{name}::{variant_ident} has no discriminant."));
                 let match_arm_body = impl_fields(variant.fields, &quote! { Self::#variant_ident });
                 match_arms.extend(quote! {
                     #discriminant => {

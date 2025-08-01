@@ -2,7 +2,7 @@ use extend::Extend;
 use iterator_tokens::IteratorTokens;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields, Ident, Index};
+use syn::{parse_macro_input, parse_quote, Data, DeriveInput, Fields, Ident};
 
 use crate::{add_trait_bounds, get_repr_type};
 
@@ -60,14 +60,14 @@ fn impl_body(
                     Self::#ident #parameters => #iterator_enum_name::#ident(#statement),
                 });
                 iterator_enum_iterator_match_arms.extend(quote! {
-                    #iterator_enum_name::#ident(iterator) => iterator.next(),
+                    Self::#ident(iterator) => iterator.next(),
                 });
             }
 
             let iterator_statement = quote! {
                 #[allow(unsafe_code)]
                 // SAFETY: This call is safe, because the macro guarantees that the enum is repr(T).
-                let discriminant = unsafe { *::core::ptr::from_ref(self).cast::<#repr_type>() } ;
+                let discriminant = unsafe { *::core::ptr::from_ref(&self).cast::<#repr_type>() } ;
                 let discriminant_iterator = <#repr_type as ::le_stream::ToLeStream>::to_le_stream(discriminant);
                 let variant_iterator = match self {
                     #iterator_statement_match_arms
@@ -132,7 +132,7 @@ fn iterator_for_fields(fields: &Fields, prefix: Option<&Ident>) -> IteratorToken
                 if let Some(prefix) = prefix {
                     iterator.extend(quote! { #prefix.#index }, &field.ty);
                 } else {
-                    iterator.extend(Index::from(index), &field.ty);
+                    iterator.extend(param(index), &field.ty);
                 }
             }
         }
@@ -156,11 +156,15 @@ fn parameters_for_fields(fields: &Fields) -> TokenStream {
         Fields::Unit => TokenStream::new(),
         Fields::Unnamed(fields) => {
             for (index, _) in fields.unnamed.iter().enumerate() {
-                let ident = format_ident!("param{index}");
+                let ident = param(index);
                 idents.extend(quote! { #ident, });
             }
 
             quote! { ( #idents ) }
         }
     }
+}
+
+fn param(index: usize) -> Ident {
+    format_ident!("param{index}")
 }
