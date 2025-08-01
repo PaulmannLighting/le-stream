@@ -2,7 +2,7 @@
 
 ## Documentation
 
-- [ ] Add README files for each module.
+- [x] Add README files for each module.
 
 ## API design
 
