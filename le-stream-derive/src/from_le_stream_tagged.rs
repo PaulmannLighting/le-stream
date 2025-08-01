@@ -93,7 +93,6 @@ fn impl_body(data: Data) -> TokenStream {
 
             variants.extend(quote! {
                 __invalid_tag => Err(__invalid_tag),
-                __invalid_tag => Err(__invalid_tag),
             });
 
             quote! {
