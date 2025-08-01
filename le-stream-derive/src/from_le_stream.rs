@@ -4,15 +4,11 @@ use syn::{
     parse_macro_input, parse_quote, Data, DeriveInput, Fields, FieldsNamed, FieldsUnnamed, Ident,
 };
 
-use crate::add_trait_bounds;
+use crate::{add_trait_bounds, get_repr_type};
 
 pub fn from_le_stream(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
-    let repr_type: Option<Ident> = input
-        .attrs
-        .iter()
-        .filter(|attr| attr.path().is_ident("repr"))
-        .find_map(|attr| attr.parse_args().ok());
+    let repr_type = get_repr_type(&input);
     let name = input.ident;
     let generics = add_trait_bounds(input.generics, &parse_quote!(::le_stream::FromLeStream));
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();

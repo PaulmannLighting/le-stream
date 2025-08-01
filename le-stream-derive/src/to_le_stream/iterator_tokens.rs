@@ -15,9 +15,8 @@ impl Extend for IteratorTokens {
     where
         T: ToTokens,
     {
-        self.statement.extend(
-            quote! { .chain(<#typ as ::le_stream::ToLeStream>::to_le_stream(self.#field)) },
-        );
+        self.statement
+            .extend(quote! { .chain(<#typ as ::le_stream::ToLeStream>::to_le_stream(#field)) });
         let current_type = &self.typ;
         self.typ =
             quote! { ::core::iter::Chain<#current_type, <#typ as ::le_stream::ToLeStream>::Iter> };

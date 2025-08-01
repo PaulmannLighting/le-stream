@@ -2,7 +2,8 @@
 
 use from_le_stream::from_le_stream;
 use from_le_stream_tagged::from_le_stream_tagged;
-use syn::{GenericParam, Generics, TypeParamBound};
+use proc_macro2::Ident;
+use syn::{DeriveInput, GenericParam, Generics, TypeParamBound};
 use to_le_stream::to_le_stream;
 
 mod from_le_stream;
@@ -34,4 +35,12 @@ fn add_trait_bounds(mut generics: Generics, trait_name: &TypeParamBound) -> Gene
         }
     }
     generics
+}
+
+fn get_repr_type(input: &DeriveInput) -> Option<Ident> {
+    input
+        .attrs
+        .iter()
+        .filter(|attr| attr.path().is_ident("repr"))
+        .find_map(|attr| attr.parse_args().ok())
 }
