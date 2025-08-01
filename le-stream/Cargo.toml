@@ -4,6 +4,7 @@ version = "3.7.0"
 description = "De-/serialize objects from/to little endian byte streams"
 authors = ["Richard Neumann <neumann@paulmann.de>"]
 license = "MIT"
+readme = "README.md"
 repository = "https://github.com/PaulmannLighting/le-stream"
 documentation = "https://docs.rs/le-stream"
 keywords = ["little", "endian", "byte", "stream"]
