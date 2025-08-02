@@ -3,8 +3,8 @@
 use core::array::IntoIter;
 
 use intx::{
-    I104, I112, I120, I24, I40, I48, I56, I72, I80, I88, I96, U104, U112, U120, U24, U40, U48, U56,
-    U72, U80, U88, U96,
+    I24, I40, I48, I56, I72, I80, I88, I96, I104, I112, I120, U24, U40, U48, U56, U72, U80, U88,
+    U96, U104, U112, U120,
 };
 
 use crate::ToLeStream;
