@@ -29,7 +29,7 @@ struct MyStruct {
     array_sub_struct: [SubStruct; 3],
     is_working: bool,
     size: usize,
-    heapless_vec: Prefixed<u8, heapless::Vec<u8, 32>>,
+    heapless_vec: Prefixed<u8, heapless::Vec<u8, { u8::MAX as usize }>>,
 }
 
 #[derive(Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
