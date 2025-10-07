@@ -24,6 +24,22 @@ impl_primitives!(
     u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize,
 );
 
+impl ToLeStream for f32 {
+    type Iter = IntoIter<u8, 4>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.to_le_bytes().into_iter()
+    }
+}
+
+impl ToLeStream for f64 {
+    type Iter = IntoIter<u8, 8>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.to_le_bytes().into_iter()
+    }
+}
+
 impl ToLeStream for () {
     type Iter = Empty<u8>;
 
