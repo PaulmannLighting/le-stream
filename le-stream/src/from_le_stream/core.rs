@@ -3,6 +3,33 @@ use core::marker::PhantomData;
 
 use crate::FromLeStream;
 
+macro_rules! impl_primitives {
+    ($($typ:ty,)+) => {
+        $(
+            impl FromLeStream for $typ {
+                fn from_le_stream<T>(bytes: T) -> Option<Self>
+                where
+                    T: Iterator<Item = u8>,
+                {
+                    <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
+                }
+            }
+        )+
+    };
+}
+
+// Implement u8 separately, since all other conversions depend on it.
+impl_primitives!(u16, u32, u64, u128, usize, i8, i16, i32, i64, i128,);
+
+impl FromLeStream for u8 {
+    fn from_le_stream<T>(mut bytes: T) -> Option<Self>
+    where
+        T: Iterator<Item = Self>,
+    {
+        bytes.next()
+    }
+}
+
 impl FromLeStream for () {
     fn from_le_stream<T>(_: T) -> Option<Self>
     where
@@ -27,96 +54,6 @@ impl FromLeStream for bool {
         T: Iterator<Item = u8>,
     {
         bytes.next().map(|byte| byte != 0)
-    }
-}
-
-impl FromLeStream for u8 {
-    fn from_le_stream<T>(mut bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = Self>,
-    {
-        bytes.next()
-    }
-}
-
-impl FromLeStream for u16 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for u32 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for u64 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for u128 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for usize {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for i8 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for i16 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for i32 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
-    }
-}
-
-impl FromLeStream for i64 {
-    fn from_le_stream<T>(bytes: T) -> Option<Self>
-    where
-        T: Iterator<Item = u8>,
-    {
-        <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
     }
 }
 
