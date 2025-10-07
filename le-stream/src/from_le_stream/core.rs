@@ -19,7 +19,7 @@ macro_rules! impl_primitives {
 }
 
 // Implement u8 separately, since all other conversions depend on it.
-impl_primitives!(u16, u32, u64, u128, usize, i8, i16, i32, i64, i128,);
+impl_primitives!(u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize,);
 
 impl FromLeStream for u8 {
     fn from_le_stream<T>(mut bytes: T) -> Option<Self>
