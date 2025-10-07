@@ -17,7 +17,6 @@ where
     }
 }
 
-#[cfg(feature = "heapless")]
 impl<const SIZE: usize> ToLeStream for String<SIZE> {
     type Iter = <Vec<u8, SIZE> as IntoIterator>::IntoIter;
 
