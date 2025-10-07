@@ -22,7 +22,6 @@ impl<P, D> Prefixed<P, D> {
 
 impl<P, D, T> AsRef<T> for Prefixed<P, D>
 where
-    T: ?Sized,
     D: AsRef<T>,
 {
     fn as_ref(&self) -> &T {
@@ -32,7 +31,6 @@ where
 
 impl<P, D, T> AsMut<T> for Prefixed<P, D>
 where
-    T: ?Sized,
     D: AsMut<T>,
 {
     fn as_mut(&mut self) -> &mut T {
@@ -42,7 +40,7 @@ where
 
 impl<P, D> Deref for Prefixed<P, D>
 where
-    D: Deref<Target: ?Sized>,
+    D: Deref,
 {
     type Target = D::Target;
 
