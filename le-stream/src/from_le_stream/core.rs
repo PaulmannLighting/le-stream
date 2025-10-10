@@ -33,6 +33,7 @@ impl FromLeStream for u8 {
 }
 
 impl FromLeStream for () {
+    /// This is guaranteed to always return `Some(())`.
     fn from_le_stream<T>(_: T) -> Option<Self>
     where
         T: Iterator<Item = u8>,
@@ -42,6 +43,7 @@ impl FromLeStream for () {
 }
 
 impl<T> FromLeStream for PhantomData<T> {
+    /// This is guaranteed to always return `Some(PhantomData<T>)`.
     fn from_le_stream<I>(_: I) -> Option<Self>
     where
         I: Iterator<Item = u8>,
