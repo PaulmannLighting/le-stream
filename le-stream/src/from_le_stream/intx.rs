@@ -15,7 +15,7 @@ macro_rules! implement_for {
                 where
                     T: Iterator<Item = u8>,
                 {
-                    <[u8; size_of::<Self>()]>::from_le_stream(bytes).map(Self::from_le_bytes)
+                    <[u8; Self::BITS as usize / 8]>::from_le_stream(bytes).map(Self::from_le_bytes)
                 }
             }
         )+
