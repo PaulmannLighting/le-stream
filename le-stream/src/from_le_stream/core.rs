@@ -81,6 +81,7 @@ impl<T> FromLeStream for Option<T>
 where
     T: FromLeStream,
 {
+    /// This is guaranteed to always return `Some(Option<T>)`.
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
         I: Iterator<Item = u8>,
