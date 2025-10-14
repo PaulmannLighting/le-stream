@@ -1,6 +1,5 @@
 use core::iter::once;
 use core::marker::PhantomData;
-use core::mem::MaybeUninit;
 
 use crate::FromLeStream;
 
@@ -66,25 +65,18 @@ impl<T, const SIZE: usize> FromLeStream for [T; SIZE]
 where
     T: FromLeStream,
 {
+    #[allow(clippy::unwrap_in_result)]
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
         I: Iterator<Item = u8>,
     {
-        let mut array = [const { MaybeUninit::uninit() }; SIZE];
+        let mut array = [const { None }; SIZE];
 
         for element in &mut array {
-            element.write(T::from_le_stream(&mut bytes)?);
+            element.replace(T::from_le_stream(&mut bytes)?);
         }
 
-        Some({
-            // SAFETY:
-            // - All elements have been initialized above.
-            // - `MaybeUninit` guarantees the same size and layout as `T`.
-            #[allow(unsafe_code)]
-            unsafe {
-                array.as_ptr().cast::<[T; SIZE]>().read()
-            }
-        })
+        Some(array.map(|element| element.expect("All elements are initialized.")))
     }
 }
 
