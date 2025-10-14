@@ -1,5 +1,6 @@
 use core::iter::once;
 use core::marker::PhantomData;
+use core::mem::MaybeUninit;
 
 use crate::FromLeStream;
 
@@ -69,13 +70,19 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let mut array = [const { None }; SIZE];
+        let mut array = [const { MaybeUninit::uninit() }; SIZE];
 
-        for item in &mut array {
-            item.replace(T::from_le_stream(&mut bytes)?);
+        for element in &mut array {
+            element.write(T::from_le_stream(&mut bytes)?);
         }
 
-        Some(array.map(Option::unwrap))
+        Some(array.map(|element| {
+            // SAFETY: All elements have been initialized above.
+            #[allow(unsafe_code)]
+            unsafe {
+                element.assume_init()
+            }
+        }))
     }
 }
 
