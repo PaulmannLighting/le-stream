@@ -78,7 +78,7 @@ where
 
         Some({
             // SAFETY:
-            // - All elements have been initialized.
+            // - All elements have been initialized above.
             // - `MaybeUninit` guarantees the same size and layout as `T`.
             #[allow(unsafe_code)]
             unsafe {
