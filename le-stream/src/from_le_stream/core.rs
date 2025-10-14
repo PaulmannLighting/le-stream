@@ -76,13 +76,13 @@ where
             element.write(T::from_le_stream(&mut bytes)?);
         }
 
-        Some(array.map(|element| {
-            // SAFETY: All elements have been initialized above.
+        Some({
+            // SAFETY: All elements have been initialized and `MaybeUninit` is transparent.
             #[allow(unsafe_code)]
             unsafe {
-                element.assume_init()
+                array.as_ptr().cast::<[T; SIZE]>().read()
             }
-        }))
+        })
     }
 }
 
