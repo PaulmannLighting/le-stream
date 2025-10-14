@@ -77,7 +77,9 @@ where
         }
 
         Some({
-            // SAFETY: All elements have been initialized and `MaybeUninit` is transparent.
+            // SAFETY:
+            // - All elements have been initialized.
+            // - `MaybeUninit` guarantees the same size and layout as `T`.
             #[allow(unsafe_code)]
             unsafe {
                 array.as_ptr().cast::<[T; SIZE]>().read()
