@@ -1,6 +1,7 @@
 use core::array::IntoIter;
-use core::iter::{Empty, FlatMap, empty};
+use core::iter::{Chain, Empty, FlatMap, empty};
 use core::marker::PhantomData;
+use core::ops::{Range, RangeInclusive};
 
 use crate::ToLeStream;
 
@@ -83,5 +84,28 @@ where
 
     fn to_le_stream(self) -> Self::Iter {
         option_iterator::OptionIterator::new(self)
+    }
+}
+
+impl<T> ToLeStream for Range<T>
+where
+    T: ToLeStream,
+{
+    type Iter = Chain<<T as ToLeStream>::Iter, <T as ToLeStream>::Iter>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        self.start.to_le_stream().chain(self.end.to_le_stream())
+    }
+}
+
+impl<T> ToLeStream for RangeInclusive<T>
+where
+    T: ToLeStream,
+{
+    type Iter = Chain<<T as ToLeStream>::Iter, <T as ToLeStream>::Iter>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        let (start, end) = self.into_inner();
+        start.to_le_stream().chain(end.to_le_stream())
     }
 }

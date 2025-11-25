@@ -1,5 +1,6 @@
 use core::iter::once;
 use core::marker::PhantomData;
+use core::ops::{Range, RangeInclusive};
 
 use crate::FromLeStream;
 
@@ -93,5 +94,33 @@ where
             || Some(None),
             |byte| T::from_le_stream(once(byte).chain(bytes)).map(Some),
         )
+    }
+}
+
+impl<T> FromLeStream for Range<T>
+where
+    T: FromLeStream,
+{
+    fn from_le_stream<I>(mut bytes: I) -> Option<Self>
+    where
+        I: Iterator<Item = u8>,
+    {
+        let start = T::from_le_stream(&mut bytes)?;
+        let end = T::from_le_stream(&mut bytes)?;
+        Some(start..end)
+    }
+}
+
+impl<T> FromLeStream for RangeInclusive<T>
+where
+    T: FromLeStream,
+{
+    fn from_le_stream<I>(mut bytes: I) -> Option<Self>
+    where
+        I: Iterator<Item = u8>,
+    {
+        let start = T::from_le_stream(&mut bytes)?;
+        let end = T::from_le_stream(&mut bytes)?;
+        Some(start..=end)
     }
 }
