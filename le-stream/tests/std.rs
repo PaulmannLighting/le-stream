@@ -5,7 +5,6 @@
 use core::iter::empty;
 use std::ops::{Range, RangeInclusive};
 
-use le_stream::derive::{FromLeStream, ToLeStream};
 use le_stream::{Error, FromLeStream, Prefixed, ToLeStream};
 
 const MY_STRUCT_BYTES: [u8; 57] = [
