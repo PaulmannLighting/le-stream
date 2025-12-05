@@ -27,10 +27,15 @@ pub trait FromLeStream: Sized {
         T: Iterator<Item = u8>,
     {
         let instance = Self::from_le_stream(&mut bytes).ok_or(Error::UnexpectedEndOfStream)?;
-        bytes.next().map_or_else(
-            || Ok(instance),
-            |next_byte| Err(Error::StreamNotExhausted(next_byte)),
-        )
+
+        if let Some(next_byte) = bytes.next() {
+            Err(Error::StreamNotExhausted {
+                instance,
+                next_byte,
+            })
+        } else {
+            Ok(instance)
+        }
     }
 
     /// Parse an object from a slice of bytes with little endianness

@@ -140,7 +140,35 @@ fn deserialize_excess_exact() {
     let mut iter = bytes.into_iter();
     assert_eq!(
         MyStruct::from_le_stream_exact(&mut iter),
-        Err(Error::StreamNotExhausted(EXTRA_BYTE))
+        Err(Error::StreamNotExhausted {
+            instance: MyStruct {
+                flag: 0x42,
+                num: 0x1337,
+                array: [0x12, 0x34, 0x56, 0x78],
+                tail: 0xff,
+                array_u16: [0xBBAA, 0xDDCC],
+                array_sub_struct: [
+                    SubStruct {
+                        num: 0x1234,
+                        array: [0x56, 0x78, 0x9A, 0xBC],
+                    },
+                    SubStruct {
+                        num: 0x1234,
+                        array: [0x56, 0x78, 0x9A, 0xBC],
+                    },
+                    SubStruct {
+                        num: 0x1234,
+                        array: [0x56, 0x78, 0x9A, 0xBC],
+                    },
+                ],
+                is_working: false,
+                size: 0x1213_3742_1213_3742,
+                heapless_vec: heapless::Vec::try_from([0x01, 0x02, 0x03].as_slice())
+                    .unwrap()
+                    .into(),
+            },
+            next_byte: EXTRA_BYTE
+        })
     );
     assert_eq!(iter.next(), Some(TAIL));
     assert_eq!(iter.next(), None);

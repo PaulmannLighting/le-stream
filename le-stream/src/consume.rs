@@ -1,4 +1,4 @@
-use crate::{Error, FromLeStream};
+use crate::{FromLeStream, Result};
 
 /// Consumes a stream of bytes with little endianness to crate an object.
 pub trait Consume<T> {
@@ -7,7 +7,7 @@ pub trait Consume<T> {
     /// # Errors
     ///
     /// Returns an [`Error`] if the stream terminates prematurely or contains excess bytes.
-    fn consume(self) -> Result<T, Error>;
+    fn consume(self) -> Result<T>;
 
     /// Consumes the iterator partially to create an instance of `T`.
     fn consume_partial(self) -> Option<T>;
@@ -18,7 +18,7 @@ where
     T: FromLeStream,
     I: Iterator<Item = u8>,
 {
-    fn consume(self) -> Result<T, Error> {
+    fn consume(self) -> Result<T> {
         T::from_le_stream_exact(self)
     }
 
