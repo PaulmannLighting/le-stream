@@ -1,3 +1,5 @@
+#![cfg(feature = "std")]
+
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::fmt::Debug;
