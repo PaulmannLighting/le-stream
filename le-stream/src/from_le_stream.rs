@@ -11,6 +11,7 @@ pub trait FromLeStream: Sized {
     /// Parse an object from a stream of bytes with little endianness.
     ///
     /// # Errors
+    ///
     /// Returns [`None`] if the stream terminates prematurely.
     fn from_le_stream<T>(bytes: T) -> Option<Self>
     where
@@ -20,6 +21,7 @@ pub trait FromLeStream: Sized {
     /// that contains exactly the bytes to construct `Self`.
     ///
     /// # Errors
+    ///
     /// Returns an [`Error`] if the stream terminates prematurely
     /// or is not exhausted after deserializing `Self`.
     fn from_le_stream_exact<T>(mut bytes: T) -> Result<Self>
@@ -42,6 +44,7 @@ pub trait FromLeStream: Sized {
     /// that contains exactly the bytes to construct `Self`.
     ///
     /// # Errors
+    ///
     /// Returns an [`Error`] if the buffer is too small or contains excess data.
     fn from_le_slice(bytes: &[u8]) -> Result<Self> {
         Self::from_le_stream_exact(bytes.iter().copied())
