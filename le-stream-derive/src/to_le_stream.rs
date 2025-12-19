@@ -65,7 +65,7 @@ fn impl_body(
             }
 
             let iterator_statement = quote! {
-                #[allow(unsafe_code)]
+                #[expect(unsafe_code)]
                 // SAFETY: This call is safe, because the macro guarantees that the enum is repr(T).
                 let discriminant = unsafe { *::core::ptr::from_ref(&self).cast::<#repr_type>() } ;
                 let discriminant_iterator = <#repr_type as ::le_stream::ToLeStream>::to_le_stream(discriminant);

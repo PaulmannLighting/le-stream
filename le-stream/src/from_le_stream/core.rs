@@ -66,7 +66,6 @@ impl<T, const SIZE: usize> FromLeStream for [T; SIZE]
 where
     T: FromLeStream,
 {
-    #[allow(clippy::unwrap_in_result)]
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
         I: Iterator<Item = u8>,
