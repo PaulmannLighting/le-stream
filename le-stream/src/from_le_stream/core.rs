@@ -1,3 +1,4 @@
+use core::convert::Infallible;
 use core::iter::once;
 use core::marker::PhantomData;
 use core::ops::{Range, RangeInclusive};
@@ -30,6 +31,12 @@ impl FromLeStream for u8 {
         T: Iterator<Item = Self>,
     {
         bytes.next()
+    }
+}
+
+impl FromLeStream for Infallible {
+    fn from_le_stream<T>(_: T) -> Option<Self> {
+        unreachable!()
     }
 }
 

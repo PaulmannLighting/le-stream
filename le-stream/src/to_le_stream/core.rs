@@ -1,4 +1,5 @@
 use core::array::IntoIter;
+use core::convert::Infallible;
 use core::iter::{Chain, Empty, FlatMap, empty};
 use core::marker::PhantomData;
 use core::ops::{Range, RangeInclusive};
@@ -38,6 +39,14 @@ impl ToLeStream for f64 {
 
     fn to_le_stream(self) -> Self::Iter {
         self.to_le_bytes().into_iter()
+    }
+}
+
+impl ToLeStream for Infallible {
+    type Iter = Empty<u8>;
+
+    fn to_le_stream(self) -> Self::Iter {
+        unreachable!()
     }
 }
 
