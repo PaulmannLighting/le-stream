@@ -16,14 +16,12 @@ where
     where
         I: Iterator<Item = u8>,
     {
-        let (lower, upper) = bytes.size_hint();
-        let mut result = Self::with_capacity(upper.unwrap_or(lower));
+        let mut result = Self::new();
 
         while let Some(byte) = bytes.next() {
             result.push(T::from_le_stream(once(byte).chain(&mut bytes))?);
         }
 
-        result.shrink_to_fit();
         Some(result)
     }
 }
