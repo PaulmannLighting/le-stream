@@ -2,11 +2,11 @@ use crate::FromLeStream;
 
 /// Try to parse an object from a stream of bytes with little endianness.
 pub trait TryFromLeStream<T>: TryFrom<T> {
-    /// Try to parse an object from a stream of bytes with little endianness.
+    /// Try to parse an object from another type that can be parsed from a stream of bytes with little endianness.
     ///
     /// # Errors
     ///
-    /// Returns `None` if the stream terminates prematurely, or `Some(error)` if the parsing fails.
+    /// Returns `None` if the stream terminates prematurely, or `Some(error)` if the conversion fails.
     fn try_from_le_stream<I>(bytes: I) -> Result<Self, Option<<Self as TryFrom<T>>::Error>>
     where
         I: Iterator<Item = u8>;
