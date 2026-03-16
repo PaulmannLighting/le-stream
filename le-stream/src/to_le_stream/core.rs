@@ -67,7 +67,8 @@ impl<T, const SIZE: usize> ToLeStream for [T; SIZE]
 where
     T: ToLeStream,
 {
-    type Iter = FlatMap<IntoIter<T, SIZE>, T::Iter, fn(T) -> T::Iter>;
+    type Iter =
+        FlatMap<IntoIter<T, SIZE>, <T as ToLeStream>::Iter, fn(T) -> <T as ToLeStream>::Iter>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_iter().flat_map(T::to_le_stream)
@@ -78,7 +79,7 @@ impl<T> ToLeStream for Option<T>
 where
     T: ToLeStream,
 {
-    type Iter = Flatten<core::option::IntoIter<T::Iter>>;
+    type Iter = Flatten<core::option::IntoIter<<T as ToLeStream>::Iter>>;
 
     fn to_le_stream(self) -> Self::Iter {
         self.map(ToLeStream::to_le_stream).into_iter().flatten()
