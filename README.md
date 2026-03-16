@@ -17,7 +17,7 @@ fn main() {
 
     let bytes: [u8; 4] = [0xd2, 0x04, 0x00, 0x00];
     let target: i32 = 1234;
-    assert_eq!(i32::from_le_stream(&mut bytes.into_iter()), Some(target));
+    assert_eq!(i32::from_le_stream(bytes.into_iter()), Some(target));
 }
 ```
 
