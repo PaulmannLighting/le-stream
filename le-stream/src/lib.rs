@@ -1,7 +1,6 @@
 //! A library for reading and writing data in little-endian byte order.
 
 #![no_std]
-extern crate alloc;
 
 pub use consume::Consume;
 pub use error::{Error, Result};

@@ -21,8 +21,7 @@ le-stream-derive = { version = "1", optional = true }
 macaddr = { version = "1.0", optional = true }
 
 [features]
-default = ["std"]
-std = []
+alloc = []
 derive = ["dep:le-stream-derive"]
 heapless = ["dep:heapless"]
 macaddr = ["dep:macaddr"]

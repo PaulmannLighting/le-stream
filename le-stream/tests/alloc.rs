@@ -1,6 +1,6 @@
 //! Tests for the `FromLeStream` and `ToLeStream` traits on structs.
 
-#![cfg(all(test, feature = "derive"))]
+#![cfg(all(test, feature = "derive", feature = "alloc"))]
 
 use core::iter::empty;
 use std::ops::{Range, RangeInclusive};

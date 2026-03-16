@@ -2,8 +2,8 @@ use core::fmt::Debug;
 use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
 
+mod alloc;
 mod heapless;
-mod std;
 
 /// A wrapper type that adds a size prefix to the data it contains.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

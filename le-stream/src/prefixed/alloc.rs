@@ -1,4 +1,6 @@
-#![cfg(feature = "std")]
+#![cfg(feature = "alloc")]
+
+extern crate alloc;
 
 use alloc::boxed::Box;
 use alloc::vec::Vec;
