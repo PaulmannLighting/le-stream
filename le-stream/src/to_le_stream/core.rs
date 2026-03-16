@@ -1,12 +1,9 @@
 use core::array::IntoIter;
-use core::iter::{Chain, Empty, FlatMap, empty};
+use core::iter::{Chain, Empty, FlatMap, Flatten, empty};
 use core::marker::PhantomData;
 use core::ops::{Range, RangeInclusive};
 
-use self::option_iterator::OptionIterator;
 use crate::ToLeStream;
-
-mod option_iterator;
 
 macro_rules! impl_primitives {
     ($($typ:ty,)+) => {
@@ -81,10 +78,10 @@ impl<T> ToLeStream for Option<T>
 where
     T: ToLeStream,
 {
-    type Iter = OptionIterator<T::Iter>;
+    type Iter = Flatten<core::option::IntoIter<T::Iter>>;
 
     fn to_le_stream(self) -> Self::Iter {
-        OptionIterator::from(self)
+        self.map(ToLeStream::to_le_stream).into_iter().flatten()
     }
 }
 
