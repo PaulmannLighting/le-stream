@@ -3,6 +3,7 @@ use core::iter::{Chain, Empty, FlatMap, empty};
 use core::marker::PhantomData;
 use core::ops::{Range, RangeInclusive};
 
+use self::option_iterator::OptionIterator;
 use crate::ToLeStream;
 
 mod option_iterator;
@@ -80,10 +81,10 @@ impl<T> ToLeStream for Option<T>
 where
     T: ToLeStream,
 {
-    type Iter = option_iterator::OptionIterator<T>;
+    type Iter = OptionIterator<T>;
 
     fn to_le_stream(self) -> Self::Iter {
-        option_iterator::OptionIterator::new(self)
+        OptionIterator::new(self)
     }
 }
 
