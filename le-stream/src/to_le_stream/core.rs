@@ -81,10 +81,10 @@ impl<T> ToLeStream for Option<T>
 where
     T: ToLeStream,
 {
-    type Iter = OptionIterator<T>;
+    type Iter = OptionIterator<T::Iter>;
 
     fn to_le_stream(self) -> Self::Iter {
-        OptionIterator::new(self)
+        OptionIterator::from(self)
     }
 }
 
