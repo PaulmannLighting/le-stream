@@ -25,6 +25,12 @@ struct MyStruct {
     is_working: bool,
     size: usize,
 }
+
+#[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
+struct SubStruct {
+    num: u16,
+    array: [u8; 4],
+}
 ```
 
 ## Serialize
