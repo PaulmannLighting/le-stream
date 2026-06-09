@@ -59,3 +59,15 @@ where
         &mut self.data
     }
 }
+
+impl<P, D> IntoIterator for Prefixed<P, D>
+where
+    D: IntoIterator,
+{
+    type Item = D::Item;
+    type IntoIter = D::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
