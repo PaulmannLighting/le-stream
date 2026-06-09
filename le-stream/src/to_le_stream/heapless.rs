@@ -2,13 +2,14 @@
 
 use core::iter::FlatMap;
 
-use heapless::{String, Vec};
+use heapless::{LenType, String, Vec};
 
 use crate::ToLeStream;
 
-impl<T, const SIZE: usize> ToLeStream for Vec<T, SIZE>
+impl<T, const SIZE: usize, LenT> ToLeStream for Vec<T, SIZE, LenT>
 where
     T: ToLeStream,
+    LenT: LenType,
 {
     type Iter = FlatMap<<Self as IntoIterator>::IntoIter, T::Iter, fn(T) -> T::Iter>;
 
@@ -17,8 +18,11 @@ where
     }
 }
 
-impl<const SIZE: usize> ToLeStream for String<SIZE> {
-    type Iter = <Vec<u8, SIZE> as IntoIterator>::IntoIter;
+impl<const SIZE: usize, LenT> ToLeStream for String<SIZE, LenT>
+where
+    LenT: LenType,
+{
+    type Iter = <Vec<u8, SIZE, LenT> as IntoIterator>::IntoIter;
 
     fn to_le_stream(self) -> Self::Iter {
         self.into_bytes().into_iter()

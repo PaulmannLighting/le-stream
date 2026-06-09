@@ -2,13 +2,14 @@
 
 use core::iter::once;
 
-use heapless::{String, Vec};
+use heapless::{LenType, String, Vec};
 
 use crate::FromLeStream;
 
-impl<T, const SIZE: usize> FromLeStream for Vec<T, SIZE>
+impl<T, const SIZE: usize, LenT> FromLeStream for Vec<T, SIZE, LenT>
 where
     T: FromLeStream,
+    LenT: LenType,
 {
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
@@ -30,11 +31,14 @@ where
     }
 }
 
-impl<const SIZE: usize> FromLeStream for String<SIZE> {
+impl<const SIZE: usize, LenT> FromLeStream for String<SIZE, LenT>
+where
+    LenT: LenType,
+{
     fn from_le_stream<T>(mut bytes: T) -> Option<Self>
     where
         T: Iterator<Item = u8>,
     {
-        Vec::<u8, SIZE>::from_le_stream(&mut bytes).and_then(|vec| Self::from_utf8(vec).ok())
+        Vec::<u8, SIZE, LenT>::from_le_stream(&mut bytes).and_then(|vec| Self::from_utf8(vec).ok())
     }
 }
