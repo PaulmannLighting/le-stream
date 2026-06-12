@@ -12,6 +12,12 @@ criteria = "safe-to-deploy"
 version = "0.9.1"
 notes = "Audited for unsafe code usage. The crate is widely used and maintained by experienced developers. No known CVEs were found. A full audit was not performed due to the size and complexity of the crate."
 
+[[audits.heapless]]
+who = "Richard Neumann <neumann@paulmann.de>"
+criteria = "safe-to-deploy"
+delta = "0.9.1 -> 0.9.3"
+notes = "AI-assisted audit: reviewed unsafe-sensitive delta including panic-safe clear/truncate handling, UnionNode initialization fixes, Box::from_raw/into_raw additions, and LenType casting updates; no new exploitable behavior identified for this project context."
+
 [[audits.intx]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
@@ -21,6 +27,12 @@ version = "0.1.0"
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
 version = "8.0.0"
+
+[[audits.le-stream]]
+who = "Richard Neumann <neumann@paulmann.de>"
+criteria = "safe-to-deploy"
+version = "9.1.0"
+notes = "AI-assisted audit: reviewed local workspace changes versus prior audited line, including heapless integration updates and serialization/deserialization path adjustments; no new security-relevant unsafe behavior introduced."
 
 [[audits.le-stream-derive]]
 who = "Richard Neumann <neumann@paulmann.de>"
@@ -36,6 +48,12 @@ version = "1.0.1"
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
 version = "1.0.1"
+
+[[audits.stable_deref_trait]]
+who = "Richard Neumann <neumann@paulmann.de>"
+criteria = "safe-to-deploy"
+delta = "1.2.0 -> 1.2.1"
+notes = "AI-assisted audit: reviewed delta for new StableDeref impls (Cow variants, Arc cfg guard) and found no security-impacting behavior changes."
 
 [[trusted.dtolnay]]
 criteria = "safe-to-deploy"
