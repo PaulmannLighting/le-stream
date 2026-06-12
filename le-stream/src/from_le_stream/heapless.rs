@@ -1,18 +1,19 @@
 #![cfg(feature = "heapless")]
 
-use heapless::{String, Vec};
+use heapless::{LenType, String, Vec};
 
 use crate::FromLeStream;
 
-impl<T, const SIZE: usize> FromLeStream for Vec<T, SIZE, u8>
+impl<T, const SIZE: usize, LenT> FromLeStream for Vec<T, SIZE, LenT>
 where
     T: FromLeStream,
+    LenT: LenType + FromLeStream + Into<usize>,
 {
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
     where
         I: Iterator<Item = u8>,
     {
-        let size = u8::from_le_stream(bytes.by_ref())?;
+        let size: usize = LenT::from_le_stream(bytes.by_ref())?.into();
         let mut result = Self::new();
 
         for _ in 0..size {
@@ -25,7 +26,10 @@ where
     }
 }
 
-impl<const SIZE: usize> FromLeStream for String<SIZE, u8> {
+impl<const SIZE: usize, LenT> FromLeStream for String<SIZE, LenT>
+where
+    LenT: LenType + FromLeStream + Into<usize>,
+{
     fn from_le_stream<T>(mut bytes: T) -> Option<Self>
     where
         T: Iterator<Item = u8>,
