@@ -1,12 +1,15 @@
 #![cfg(feature = "heapless")]
 
+use core::fmt::Debug;
+
 use heapless::{LenType, String, Vec};
+use log::warn;
 
 use crate::FromLeStream;
 
 impl<T, const SIZE: usize, LenT> FromLeStream for Vec<T, SIZE, LenT>
 where
-    T: FromLeStream,
+    T: Debug + FromLeStream,
     LenT: LenType + FromLeStream + Into<usize>,
 {
     fn from_le_stream<I>(mut bytes: I) -> Option<Self>
@@ -19,7 +22,7 @@ where
         for _ in 0..size {
             result
                 .push(T::from_le_stream(bytes.by_ref())?)
-                .unwrap_or_else(|_| unreachable!());
+                .unwrap_or_else(|element| warn!("Vec overflow. Discarding element: {element:?}"));
         }
 
         Some(result)
