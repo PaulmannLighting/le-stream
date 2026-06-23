@@ -1,29 +1,14 @@
 //! Test for tagged stream deserialization using `FromLeStreamTagged`.
-//!
-#![cfg(test)]
 
-use le_stream::{FromLeStream, FromLeStreamTagged};
+#![cfg(all(test, feature = "derive"))]
 
-#[derive(Debug, PartialEq)]
+use le_stream::FromLeStream;
+
+#[derive(Debug, PartialEq, FromLeStream)]
 #[repr(u16)]
 enum Tagged {
     A(u8) = 0x0001,
     B(u16) = 0x0002,
-}
-
-impl FromLeStreamTagged for Tagged {
-    type Tag = u16;
-
-    fn from_le_stream_tagged<T>(tag: Self::Tag, mut bytes: T) -> Result<Option<Self>, Self::Tag>
-    where
-        T: Iterator<Item = u8>,
-    {
-        match tag {
-            0x0001 => Ok(u8::from_le_stream(&mut bytes).map(Self::A)),
-            0x0002 => Ok(u16::from_le_stream(&mut bytes).map(Self::B)),
-            other => Err(other),
-        }
-    }
 }
 
 #[test]

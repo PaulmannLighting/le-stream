@@ -81,9 +81,7 @@ fn serialize_struct() {
         ],
         is_working: false,
         size: 0x1213_3742_1213_3742,
-        heapless_vec: heapless::Vec::try_from([0x01, 0x02, 0x03].as_slice())
-            .unwrap()
-            .into(),
+        heapless_vec: heapless::Vec::try_from([0x01, 0x02, 0x03].as_slice()).unwrap(),
     };
 
     assert_eq!(

@@ -29,3 +29,14 @@ where
         self.into_iter().flat_map(ToLeStream::to_le_stream)
     }
 }
+
+impl<T> ToLeStream for Box<T>
+where
+    T: ToLeStream,
+{
+    type Iter = <T as ToLeStream>::Iter;
+
+    fn to_le_stream(self) -> Self::Iter {
+        ToLeStream::to_le_stream(*self)
+    }
+}
