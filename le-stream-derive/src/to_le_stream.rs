@@ -82,7 +82,7 @@ fn impl_body(
             };
 
             let iterator_enum = quote! {
-                enum #iterator_enum_name {
+                pub enum #iterator_enum_name {
                     #iterator_enum_variants
                 }
             };
