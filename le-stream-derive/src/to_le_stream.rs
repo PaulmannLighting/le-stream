@@ -83,7 +83,6 @@ fn impl_body(
 
             let iterator_enum = quote! {
                 #[expect(clippy::missing_docs)]
-                #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
                 pub enum #iterator_enum_name {
                     #iterator_enum_variants
                 }
