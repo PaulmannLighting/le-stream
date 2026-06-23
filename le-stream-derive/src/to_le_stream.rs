@@ -54,6 +54,7 @@ fn impl_body(
                 let parameters = parameters_for_fields(&variant.fields);
                 let (statement, typ) = iterator.into();
                 iterator_enum_variants.extend(quote! {
+                    #[expect(clippy::missing_docs)]
                     #ident(#typ),
                 });
                 iterator_statement_match_arms.extend(quote! {
