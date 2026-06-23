@@ -54,7 +54,7 @@ fn impl_body(
                 let parameters = parameters_for_fields(&variant.fields);
                 let (statement, typ) = iterator.into();
                 iterator_enum_variants.extend(quote! {
-                    #[expect(clippy::missing_docs)]
+                    #[expect(missing_docs)]
                     #ident(#typ),
                 });
                 iterator_statement_match_arms.extend(quote! {
@@ -83,7 +83,7 @@ fn impl_body(
             };
 
             let iterator_enum = quote! {
-                #[expect(clippy::missing_docs)]
+                #[expect(missing_docs)]
                 pub enum #iterator_enum_name {
                     #iterator_enum_variants
                 }
