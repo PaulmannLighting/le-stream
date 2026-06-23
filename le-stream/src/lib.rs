@@ -6,6 +6,7 @@ pub use consume::Consume;
 pub use error::{Error, Result};
 pub use from_le_stream::FromLeStream;
 pub use prefixed::Prefixed;
+pub use stream::LeStream;
 pub use to_le_stream::ToLeStream;
 pub use try_from_le_stream::TryFromLeStream;
 
@@ -13,6 +14,7 @@ mod consume;
 mod error;
 mod from_le_stream;
 mod prefixed;
+mod stream;
 mod to_le_stream;
 mod try_from_le_stream;
 
