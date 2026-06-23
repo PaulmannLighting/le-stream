@@ -19,4 +19,4 @@ mod to_le_stream;
 mod try_from_le_stream;
 
 #[cfg(feature = "derive")]
-pub use le_stream_derive::{FromLeStream, FromLeStreamTagged, ToLeStream};
+pub use le_stream_derive::{FromLeStream, ToLeStream};
