@@ -1,5 +1,11 @@
 #![cfg(feature = "alloc")]
 
+//! Serialization for unprefixed allocated collections.
+//!
+//! `Vec<T>` and `Box<[T]>` serialize by concatenating their elements without a
+//! length prefix. Use `Prefixed<P, D>` for allocated collections whose stream
+//! representation must include an explicit length.
+
 extern crate alloc;
 
 use alloc::boxed::Box;

@@ -1,5 +1,11 @@
 #![cfg(feature = "heapless")]
 
+//! Serialization for length-prefixed heapless collections.
+//!
+//! `heapless::Vec<T, N, LenT>` writes its element count as little-endian
+//! `LenT`, followed by each element. `heapless::String<N, LenT>` writes its byte
+//! length as `LenT`, followed by the UTF-8 bytes.
+
 use core::iter::{Chain, FlatMap};
 
 use heapless::{LenType, String, Vec};

@@ -15,6 +15,22 @@ ranges, and additional feature-gated types.
 - Derived enums require `#[repr(T)]` and explicit discriminants. The
   discriminant is written as `T`, followed by associated data.
 
+## Collections
+
+The `alloc` collection implementations do not add a size prefix by default.
+`Vec<T>` and `Box<[T]>` deserialize by consuming as many complete `T` values as
+the byte stream can provide. Use `Prefixed<P, D>` when a standard allocated
+collection needs an explicit length in the stream.
+
+The `heapless` collection implementations are length-prefixed. A
+`heapless::Vec<T, N, LenT>` serializes as a little-endian `LenT` element count
+followed by exactly that many serialized `T` values. A
+`heapless::String<N, LenT>` serializes as a `LenT` byte count followed by that
+many UTF-8 bytes. During deserialization the prefix is read first, and the
+implementation then attempts to consume exactly the number of elements or bytes
+specified by that prefix. This is possible because the heapless type carries a
+fixed capacity limit.
+
 ## Examples
 
 ```rust
@@ -50,7 +66,9 @@ assert_eq!(Header::from_le_stream_exact(bytes.into_iter()), Ok(header));
 ## Feature flags
 
 - `derive`: re-export the derive macros.
-- `alloc`: support `Vec`, `Box<T>`, `Box<[T]>`, and `Prefixed<P, Box<[T]>>`.
-- `heapless`: support `heapless::Vec` and `heapless::String`.
+- `alloc`: support unprefixed `Vec`, `Box<T>`, `Box<[T]>`, and explicitly
+  prefixed `Prefixed<P, Box<[T]>>`.
+- `heapless`: support length-prefixed `heapless::Vec<T, N, LenT>` and
+  `heapless::String<N, LenT>`.
 - `macaddr`: support `MacAddr6` and `MacAddr8` in little-endian byte order.
 - `intx`: support selected `intx` integer types.

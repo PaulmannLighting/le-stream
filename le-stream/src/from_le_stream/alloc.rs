@@ -1,5 +1,12 @@
 #![cfg(feature = "alloc")]
 
+//! Deserialization for unprefixed allocated collections.
+//!
+//! `Vec<T>` and `Box<[T]>` do not read a length prefix. They repeatedly
+//! deserialize complete `T` values until the byte stream is exhausted. Use
+//! `Prefixed<P, D>` for allocated collections whose stream representation must
+//! include an explicit length.
+
 extern crate alloc;
 
 use alloc::boxed::Box;

@@ -22,6 +22,20 @@ Derived enums require `#[repr(T)]` and an explicit discriminant on every
 variant. The discriminant is serialized as `T`, followed by the variant's
 associated data.
 
+## Collections
+
+Allocated collection types do not carry a size prefix by default. `Vec<T>` and
+`Box<[T]>` deserialize by consuming as many complete `T` values as possible from
+the stream. If a standard allocated collection needs an explicit length, wrap it
+in `Prefixed<P, D>`.
+
+Heapless collection types are length-prefixed. `heapless::Vec<T, N, LenT>` uses
+a little-endian `LenT` element count, and `heapless::String<N, LenT>` uses a
+little-endian `LenT` byte count. Deserialization reads that prefix first and
+then attempts to consume exactly the number of elements or bytes it describes.
+This format is suitable for heapless collections because their types include a
+fixed capacity limit.
+
 ## Example
 
 ```rust
@@ -66,9 +80,10 @@ assert_eq!(Message::from_le_stream_exact(bytes.into_iter()), Ok(message));
 
 - `derive`: re-export `FromLeStream` and `ToLeStream` derive macros from
   `le-stream-derive`.
-- `alloc`: implementations for `Vec`, `Box<T>`, `Box<[T]>`, and prefixed boxed
-  slices.
-- `heapless`: implementations for `heapless::Vec` and `heapless::String`.
+- `alloc`: implementations for unprefixed `Vec`, `Box<T>`, `Box<[T]>`, and
+  explicitly prefixed boxed slices.
+- `heapless`: implementations for length-prefixed `heapless::Vec<T, N, LenT>`
+  and `heapless::String<N, LenT>`.
 - `macaddr`: implementations for `macaddr::MacAddr6` and `macaddr::MacAddr8`.
 - `intx`: implementations for selected `intx` integer types.
 

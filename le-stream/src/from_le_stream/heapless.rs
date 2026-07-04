@@ -1,5 +1,13 @@
 #![cfg(feature = "heapless")]
 
+//! Deserialization for length-prefixed heapless collections.
+//!
+//! `heapless::Vec<T, N, LenT>` reads a little-endian `LenT` element count and
+//! then attempts to deserialize exactly that many `T` values. `heapless::String`
+//! follows the same rule with a byte count and validates the consumed bytes as
+//! UTF-8. The fixed capacity encoded in the type makes the prefixed format
+//! appropriate for these collections.
+
 use heapless::{LenType, String, Vec};
 
 use crate::FromLeStream;

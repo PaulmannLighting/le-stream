@@ -11,6 +11,21 @@
 //! contents. `Option<T>` is intentionally compact: `None` emits no bytes and
 //! `Some(value)` emits only `value`.
 //!
+//! # Collection Semantics
+//!
+//! Standard-library collection types behind the `alloc` feature are not
+//! length-prefixed by default. `Vec<T>` and `Box<[T]>` deserialize by consuming
+//! as many complete `T` values as the byte stream can provide. Use
+//! [`Prefixed<P, D>`] when an allocated collection needs an explicit length in
+//! the stream.
+//!
+//! `heapless::Vec<T, N, LenT>` and `heapless::String<N, LenT>` are different:
+//! they always encode a length prefix of type `LenT`, followed by exactly that
+//! many serialized elements or UTF-8 bytes. During deserialization the prefix is
+//! read first, and the implementation then attempts to consume exactly the
+//! number of elements or bytes described by that prefix. This works naturally
+//! for `heapless` collections because their type carries a fixed capacity limit.
+//!
 //! The `derive` feature re-exports derive macros for structs and explicitly
 //! represented enums. Derived enums require `#[repr(T)]` and explicit
 //! discriminants on every variant; the discriminant is encoded as `T`, followed
