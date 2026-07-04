@@ -50,15 +50,23 @@ fn impl_body(
 
             for variant in enumeration.variants {
                 let ident = variant.ident;
+                let (_, discriminant) = variant
+                    .discriminant
+                    .unwrap_or_else(|| panic!("{name}::{ident} has no discriminant."));
                 let iterator = iterator_for_fields(&variant.fields, None);
                 let parameters = parameters_for_fields(&variant.fields);
                 let (statement, typ) = iterator.into();
                 iterator_enum_variants.extend(quote! {
-                    #[expect(missing_docs)]
+                    #[doc(hidden)]
+                    #[allow(missing_docs)]
                     #ident(#typ),
                 });
                 iterator_statement_match_arms.extend(quote! {
-                    Self::#ident #parameters => #iterator_enum_name::#ident(#statement),
+                    Self::#ident #parameters => {
+                        let discriminant: #repr_type = #discriminant;
+                        <#repr_type as ::le_stream::ToLeStream>::to_le_stream(discriminant)
+                            .chain(#iterator_enum_name::#ident(#statement))
+                    },
                 });
                 iterator_enum_iterator_match_arms.extend(quote! {
                     Self::#ident(iterator) => iterator.next(),
@@ -66,14 +74,9 @@ fn impl_body(
             }
 
             let iterator_statement = quote! {
-                #[expect(unsafe_code)]
-                // SAFETY: This call is safe, because the macro guarantees that the enum is repr(T).
-                let discriminant = unsafe { *::core::ptr::from_ref(&self).cast::<#repr_type>() } ;
-                let discriminant_iterator = <#repr_type as ::le_stream::ToLeStream>::to_le_stream(discriminant);
-                let variant_iterator = match self {
+                match self {
                     #iterator_statement_match_arms
-                };
-                discriminant_iterator.chain(variant_iterator)
+                }
             };
             let iterator_type = quote! {
                 ::core::iter::Chain<
@@ -83,8 +86,9 @@ fn impl_body(
             };
 
             let iterator_enum = quote! {
-                #[expect(missing_docs)]
-                pub enum #iterator_enum_name {
+                #[doc(hidden)]
+                #[allow(missing_docs)]
+                enum #iterator_enum_name {
                     #iterator_enum_variants
                 }
             };

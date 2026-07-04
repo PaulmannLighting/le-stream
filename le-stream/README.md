@@ -1,27 +1,56 @@
 # le-stream
 
-Serialize and deserialize object to/from little-endian byte streams.
+`le-stream` converts Rust values to and from little-endian byte streams.
 
-## Example
+The crate is `no_std` by default and works with iterators instead of requiring a
+buffer. It provides implementations for primitive types, arrays, options,
+ranges, and additional feature-gated types.
+
+## Byte format
+
+- Numeric primitives use their standard little-endian byte representation.
+- `bool` is encoded as one byte: `0` for `false`, `1` for `true`.
+- Arrays and derived structs concatenate their elements or fields in order.
+- `Option<T>` has no tag: `None` writes no bytes, `Some(value)` writes `value`.
+- Derived enums require `#[repr(T)]` and explicit discriminants. The
+  discriminant is written as `T`, followed by associated data.
+
+## Examples
 
 ```rust
 use le_stream::{FromLeStream, ToLeStream};
 
-fn main() {
-    let i: i32 = 1234;
-    let bytes: [u8; 4] = [0xd2, 0x04, 0x00, 0x00];
+let bytes: Vec<_> = 0x1234_u16.to_le_stream().collect();
 
-    for (byte, target) in i.to_le_stream().zip(bytes) {
-        assert_eq!(byte, target);
-    }
-
-    let bytes: [u8; 4] = [0xd2, 0x04, 0x00, 0x00];
-    let target: i32 = 1234;
-    assert_eq!(i32::from_le_stream(bytes.into_iter()), Some(target));
-}
+assert_eq!(bytes, [0x34, 0x12]);
+assert_eq!(u16::from_le_stream_exact(bytes.into_iter()), Ok(0x1234));
 ```
 
-## Contribution guidelines
+With `features = ["derive"]`:
 
-* Use `cargo fmt`
-* Check code with `cargo clippy`
+```rust
+use le_stream::{FromLeStream, ToLeStream};
+
+#[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
+struct Header {
+    command: u8,
+    sequence: u16,
+}
+
+let header = Header {
+    command: 0xA5,
+    sequence: 0x1234,
+};
+
+let bytes: Vec<_> = header.clone().to_le_stream().collect();
+assert_eq!(bytes, [0xA5, 0x34, 0x12]);
+assert_eq!(Header::from_le_stream_exact(bytes.into_iter()), Ok(header));
+```
+
+## Feature flags
+
+- `derive`: re-export the derive macros.
+- `alloc`: support `Vec`, `Box<T>`, `Box<[T]>`, and `Prefixed<P, Box<[T]>>`.
+- `heapless`: support `heapless::Vec` and `heapless::String`.
+- `macaddr`: support `MacAddr6` and `MacAddr8` in little-endian byte order.
+- `intx`: support selected `intx` integer types.

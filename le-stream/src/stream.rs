@@ -2,9 +2,13 @@ use core::marker::PhantomData;
 
 use crate::FromLeStream;
 
-/// Extension trait on iterators to convert them into streams of deserializable types.
+/// Extension trait for reading typed values from an iterator of bytes.
 pub trait LeStream: Sized {
-    /// Convert an iterator of little endian bytes into a stream of deserializable types.
+    /// Converts an iterator of little-endian bytes into an iterator of `T`.
+    ///
+    /// Iteration stops when `T::from_le_stream` returns [`None`], usually
+    /// because the underlying byte iterator is exhausted or ends with an
+    /// incomplete value.
     fn le_stream<T>(self) -> LeStreamIterator<T, Self>;
 }
 
@@ -20,7 +24,7 @@ where
     }
 }
 
-/// An iterator over a little endian byte stream.
+/// Iterator adapter returned by [`LeStream::le_stream`].
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LeStreamIterator<T, I> {
     iterator: I,
@@ -28,7 +32,7 @@ pub struct LeStreamIterator<T, I> {
 }
 
 impl<T, I> LeStreamIterator<T, I> {
-    /// Consumes the iterator, returning the underlying byte stream.
+    /// Consumes the adapter and returns the underlying byte iterator.
     #[must_use]
     pub fn into_inner(self) -> I {
         self.iterator

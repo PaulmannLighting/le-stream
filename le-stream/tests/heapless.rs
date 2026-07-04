@@ -219,3 +219,20 @@ fn deserialize_from_slice() {
     assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
     assert_eq!(my_struct.heapless_vec, [0x01, 0x02, 0x03]);
 }
+
+#[test]
+fn serialize_heapless_string_with_u8_prefix() {
+    let value = heapless::String::<8, u8>::try_from("hey").unwrap();
+    let bytes: Vec<_> = value.to_le_stream().collect();
+
+    assert_eq!(bytes, [0x03, b'h', b'e', b'y']);
+}
+
+#[test]
+fn deserialize_heapless_string_with_u8_prefix() {
+    let bytes = [0x03, b'h', b'e', b'y'];
+    let value = heapless::String::<8, u8>::from_le_stream_exact(bytes.into_iter())
+        .expect("Could not create string from byte stream.");
+
+    assert_eq!(value.as_str(), "hey");
+}

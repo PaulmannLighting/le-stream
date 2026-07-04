@@ -242,3 +242,33 @@ fn deserialize_from_slice() {
         vec![0xAB, 0xCD].into_boxed_slice()
     );
 }
+
+#[test]
+fn serialize_alloc_collections() {
+    assert_eq!(
+        vec![0x1234_u16, 0x5678].to_le_stream().collect::<Vec<_>>(),
+        [0x34, 0x12, 0x78, 0x56]
+    );
+    assert_eq!(
+        Box::new(0x1234_u16).to_le_stream().collect::<Vec<_>>(),
+        [0x34, 0x12]
+    );
+    assert_eq!(
+        vec![0x1234_u16, 0x5678]
+            .into_boxed_slice()
+            .to_le_stream()
+            .collect::<Vec<_>>(),
+        [0x34, 0x12, 0x78, 0x56]
+    );
+}
+
+#[test]
+fn deserialize_alloc_collections() {
+    let boxed = Box::<u16>::from_le_stream_exact([0x34, 0x12].into_iter())
+        .expect("Could not create boxed value from byte stream.");
+    let slice = Box::<[u16]>::from_le_stream_exact([0x34, 0x12, 0x78, 0x56].into_iter())
+        .expect("Could not create boxed slice from byte stream.");
+
+    assert_eq!(*boxed, 0x1234);
+    assert_eq!(&*slice, &[0x1234, 0x5678]);
+}

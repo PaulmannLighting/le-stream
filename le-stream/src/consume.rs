@@ -1,15 +1,19 @@
 use crate::{FromLeStream, Result};
 
-/// Consumes a stream of bytes with little endianness to crate an object.
+/// Convenience trait for decoding a value from a byte iterator.
 pub trait Consume<T> {
-    /// Consumes the iterator to create an instance of `T`.
+    /// Consumes the complete iterator to decode a value of `T`.
     ///
     /// # Errors
     ///
-    /// Returns an [`Error`] if the stream terminates prematurely or contains excess bytes.
+    /// Returns an [`Error`](crate::Error) if the stream terminates prematurely
+    /// or contains excess bytes after the decoded value.
     fn consume(self) -> Result<T>;
 
-    /// Consumes the iterator partially to create an instance of `T`.
+    /// Decodes one value from the iterator and allows trailing bytes.
+    ///
+    /// Returns [`None`] when the iterator does not contain enough bytes for a
+    /// complete value.
     fn consume_partial(self) -> Option<T>;
 }
 

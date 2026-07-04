@@ -4,7 +4,13 @@ use core::ops::{Deref, DerefMut};
 
 mod alloc;
 
-/// A wrapper type that adds a size prefix to the data it contains.
+/// A wrapper that serializes a collection with a little-endian length prefix.
+///
+/// `P` is the integer type used for the prefix and `D` is the wrapped data.
+/// Implementations are provided for selected collection types behind feature
+/// flags. For example, `Prefixed<usize, Box<[u8]>>` serializes as a `usize`
+/// element count followed by the bytes in the boxed slice when the `alloc`
+/// feature is enabled.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct Prefixed<P, D> {
@@ -13,7 +19,7 @@ pub struct Prefixed<P, D> {
 }
 
 impl<P, D> Prefixed<P, D> {
-    /// Extract the data.
+    /// Returns the wrapped data without its prefix marker.
     pub fn into_data(self) -> D {
         self.data
     }

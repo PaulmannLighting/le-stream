@@ -2,92 +2,54 @@
 
 Derive macros for `le-stream`.
 
-## Example
+The crate provides `FromLeStream` and `ToLeStream` derives for structs and
+represented enums.
+
+## Structs
+
+Struct fields are serialized in declaration order.
 
 ```rust
 use le_stream::{FromLeStream, ToLeStream};
-use le_stream_derive::{FromLeStream, ToLeStream};
-
-const MY_STRUCT_BYTES: [u8; 39] = [
-    0x42, 0x37, 0x13, 0x12, 0x34, 0x56, 0x78, 0xff, 0xaa, 0xbb, 0xcc, 0xdd, 0x34, 0x12, 0x56, 0x78,
-    0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc, 0x34, 0x12, 0x56, 0x78, 0x9a, 0xbc, 0x00, 0x42,
-    0x37, 0x13, 0x12, 0x42, 0x37, 0x13, 0x12,
-];
 
 #[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
-struct MyStruct {
-    flag: u8,
-    num: u16,
-    array: [u8; 4],
-    tail: u8,
-    array_u16: [u16; 2],
-    array_sub_struct: [SubStruct; 3],
-    is_working: bool,
-    size: usize,
+struct Header {
+    command: u8,
+    sequence: u16,
 }
+
+let header = Header {
+    command: 0xA5,
+    sequence: 0x1234,
+};
+
+let bytes: Vec<_> = header.clone().to_le_stream().collect();
+assert_eq!(bytes, [0xA5, 0x34, 0x12]);
+assert_eq!(Header::from_le_stream_exact(bytes.into_iter()), Ok(header));
+```
+
+## Enums
+
+Enums must specify `#[repr(T)]`, and every variant must have an explicit
+discriminant. The discriminant is serialized as `T`, followed by any associated
+data.
+
+```rust
+use le_stream::{FromLeStream, ToLeStream};
 
 #[derive(Clone, Debug, Eq, PartialEq, FromLeStream, ToLeStream)]
-struct SubStruct {
-    num: u16,
-    array: [u8; 4],
+#[repr(u16)]
+enum Message {
+    Ping = 0x0001,
+    Data { sequence: u16, value: u8 } = 0x1002,
 }
+
+let message = Message::Data {
+    sequence: 0x1234,
+    value: 0xA5,
+};
+
+let bytes: Vec<_> = message.clone().to_le_stream().collect();
+assert_eq!(bytes, [0x02, 0x10, 0x34, 0x12, 0xA5]);
+assert_eq!(Message::from_le_stream_exact(bytes.into_iter()), Ok(message));
 ```
-
-## Serialize
-
-```rust
-#[test]
-fn serialize_struct() {
-    let my_struct = MyStruct {
-        flag: 0x42,
-        num: 0x1337,
-        array: [0x12, 0x34, 0x56, 0x78],
-        tail: 0xff,
-        array_u16: [0xBBAA, 0xDDCC],
-        array_sub_struct: [
-            SubStruct {
-                num: 0x1234,
-                array: [0x56, 0x78, 0x9A, 0xBC],
-            },
-            SubStruct {
-                num: 0x1234,
-                array: [0x56, 0x78, 0x9A, 0xBC],
-            },
-            SubStruct {
-                num: 0x1234,
-                array: [0x56, 0x78, 0x9A, 0xBC],
-            },
-        ],
-        is_working: false,
-        size: 0x1213_3742_1213_3742,
-    };
-
-    assert_eq!(
-        my_struct.to_le_stream().collect::<Vec<_>>(),
-        MY_STRUCT_BYTES
-    );
-}
-```
-
-# Deserialize
-
-```rust
-#[test]
-fn deserialize_struct_exact() {
-    let my_struct = MyStruct::from_le_stream_exact(MY_STRUCT_BYTES.into_iter())
-        .expect("Could not create struct from byte stream.");
-
-    assert_eq!(my_struct.flag, 0x42);
-    assert_eq!(my_struct.num, 0x1337);
-    assert_eq!(my_struct.array, [0x12, 0x34, 0x56, 0x78]);
-    assert_eq!(my_struct.tail, 0xff);
-    assert_eq!(my_struct.array_u16, [0xBBAA, 0xDDCC]);
-    assert!(!my_struct.is_working);
-    assert_eq!(my_struct.size, 0x1213_3742_1213_3742);
-}
-```
-
-## Contribution guidelines
-
-* Use `cargo fmt`
-* Check code with `cargo clippy`
