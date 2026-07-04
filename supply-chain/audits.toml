@@ -34,11 +34,23 @@ criteria = "safe-to-deploy"
 version = "9.1.0"
 notes = "AI-assisted audit: reviewed local workspace changes versus prior audited line, including heapless integration updates and serialization/deserialization path adjustments; no new security-relevant unsafe behavior introduced."
 
+[[audits.le-stream]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "9.1.0 -> 10.1.2"
+notes = "AI-assisted audit: reviewed local workspace delta including Box stream impls, LeStream iterator, enum derive consolidation, Serde serializer/deserializer additions, and tests; no unsafe code added in le-stream and no network, filesystem, or process behavior introduced."
+
 [[audits.le-stream-derive]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
 version = "1.3.2"
 
+[[audits.le-stream-derive]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "1.3.2 -> 1.3.3"
+notes = "AI-assisted audit: reviewed registry source diff; changes are version metadata, README example, lint attribute allow-to-expect, and generated iterator enum visibility. Existing unsafe discriminant read is unchanged and documented by the macro."
+
 [[audits.macaddr]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
@@ -48,12 +60,48 @@ version = "1.0.1"
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
 version = "1.0.1"
+
+[[audits.quote]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "1.0.45 -> 1.0.46"
+notes = "AI-assisted audit: reviewed local registry diff; source changes are documentation/macro refactoring around quote_spanned plus version and CI metadata. No unsafe code or runtime side effects were added."
+
+[[audits.serde]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+version = "1.0.228"
+notes = "AI-assisted audit: reviewed local registry source and unsafe-sensitive paths; crate is primarily Serde trait definitions, impls, and reexports. Unsafe UTF-8 formatting internals are bounded by fixed buffers/valid digits; no build script, network, filesystem, or process behavior identified."
+
+[[audits.serde_core]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+version = "1.0.228"
+notes = "AI-assisted audit: reviewed local registry source and unsafe-sensitive paths; unsafe use is limited to UTF-8 construction from known ASCII formatting buffers and internal formatting helpers. No external I/O or code execution behavior identified."
+
+[[audits.serde_derive]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+version = "1.0.228"
+notes = "AI-assisted audit: reviewed local registry source; proc macro parses attributes and emits Serialize/Deserialize impls using syn/quote. No unsafe code, build script, network, filesystem, or process behavior identified."
+
+[[audits.serde_repr]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-run"
+version = "0.1.20"
+notes = "AI-assisted audit: reviewed local registry source; proc macro parses repr enum input and emits Serialize/Deserialize impls delegating to primitive repr types. No unsafe code, build script, network, filesystem, or process behavior identified."
 
 [[audits.stable_deref_trait]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
 delta = "1.2.0 -> 1.2.1"
 notes = "AI-assisted audit: reviewed delta for new StableDeref impls (Cow variants, Arc cfg guard) and found no security-impacting behavior changes."
+
+[[audits.syn]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "2.0.117 -> 2.0.118"
+notes = "AI-assisted audit: reviewed local registry source diff; changes are docs, tests/benches, lint compatibility, and a small boolean literal parsing simplification. Existing parser buffer unsafe code is unchanged."
 
 [[trusted.dtolnay]]
 criteria = "safe-to-deploy"
