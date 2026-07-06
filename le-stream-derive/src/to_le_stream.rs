@@ -88,7 +88,7 @@ fn impl_body(
             let iterator_enum = quote! {
                 #[doc(hidden)]
                 #[allow(missing_docs)]
-                enum #iterator_enum_name {
+                pub enum #iterator_enum_name {
                     #iterator_enum_variants
                 }
             };
