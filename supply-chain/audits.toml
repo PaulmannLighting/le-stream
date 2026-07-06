@@ -63,6 +63,18 @@ criteria = "safe-to-deploy"
 delta = "1.3.3 -> 1.3.8"
 notes = "AI-assisted audit: reviewed local 1.3.8 proc-macro source, including struct and repr enum derive expansion, explicit discriminant handling, generated iterator helper types, and trait-bound insertion. No unsafe code, build script, filesystem, network, or process behavior was identified."
 
+[[audits.le-stream-derive]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "1.3.8 -> 1.3.9"
+notes = "AI-assisted audit: reviewed cached 1.3.9 proc-macro source, including struct and repr enum derive expansion, explicit discriminant handling, generated iterator helper types, and trait-bound insertion. No unsafe code, build script, filesystem, network, or process behavior was identified."
+
+[[audits.le-stream-derive]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+delta = "1.3.9 -> 1.3.10"
+notes = "AI-assisted audit: reviewed local 1.3.10 proc-macro source, including struct and repr enum derive expansion, explicit discriminant handling, generated iterator helper types, and trait-bound insertion. No unsafe code, build script, filesystem, network, or process behavior was identified."
+
 [[audits.macaddr]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
