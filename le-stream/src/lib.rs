@@ -19,6 +19,12 @@
 //! [`Prefixed<P, D>`] when an allocated collection needs an explicit length in
 //! the stream.
 //!
+//! `bytes::Bytes` and `bytes::BytesMut` behind the `bytes` feature are raw byte
+//! buffers. They serialize as their contained bytes and deserialize by
+//! consuming the remaining byte stream, without a length prefix. Wrapped in
+//! [`Prefixed<P, D>`], they serialize a byte count of type `P` followed by
+//! exactly that many raw bytes.
+//!
 //! `heapless::Vec<T, N, LenT>` and `heapless::String<N, LenT>` are different:
 //! they always encode a length prefix of type `LenT`, followed by exactly that
 //! many serialized elements or UTF-8 bytes. During deserialization the prefix is

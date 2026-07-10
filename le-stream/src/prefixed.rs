@@ -3,6 +3,7 @@ use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
 
 mod alloc;
+mod bytes;
 
 /// A wrapper that serializes a collection with a little-endian length prefix.
 ///
@@ -10,7 +11,9 @@ mod alloc;
 /// Implementations are provided for selected collection types behind feature
 /// flags. For example, `Prefixed<usize, Box<[u8]>>` serializes as a `usize`
 /// element count followed by the bytes in the boxed slice when the `alloc`
-/// feature is enabled.
+/// feature is enabled. `Prefixed<P, bytes::Bytes>` and
+/// `Prefixed<P, bytes::BytesMut>` serialize a byte count followed by exactly
+/// that many raw bytes when the `bytes` feature is enabled.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct Prefixed<P, D> {

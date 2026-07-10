@@ -29,6 +29,12 @@ Allocated collection types do not carry a size prefix by default. `Vec<T>` and
 the stream. If a standard allocated collection needs an explicit length, wrap it
 in `Prefixed<P, D>`.
 
+The `bytes` feature adds support for `bytes::Bytes` and `bytes::BytesMut` as
+raw byte buffers. They serialize exactly their contained bytes and deserialize
+by consuming the remaining stream. No length prefix is added unless they are
+wrapped in `Prefixed<P, D>`, which serializes a byte count of type `P` followed
+by exactly that many raw bytes.
+
 Heapless collection types are length-prefixed. `heapless::Vec<T, N, LenT>` uses
 a little-endian `LenT` element count, and `heapless::String<N, LenT>` uses a
 little-endian `LenT` byte count. Deserialization reads that prefix first and
@@ -84,6 +90,8 @@ assert_eq!(Message::from_le_stream_exact(bytes.into_iter()), Ok(message));
   explicitly prefixed boxed slices.
 - `heapless`: implementations for length-prefixed `heapless::Vec<T, N, LenT>`
   and `heapless::String<N, LenT>`.
+- `bytes`: implementations for unprefixed and explicitly prefixed raw
+  `bytes::Bytes` and `bytes::BytesMut` buffers.
 - `macaddr`: implementations for `macaddr::MacAddr6` and `macaddr::MacAddr8`.
 - `intx`: implementations for selected `intx` integer types.
 

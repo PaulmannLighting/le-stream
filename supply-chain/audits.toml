@@ -1,6 +1,12 @@
 
 # cargo-vet audits file
 
+[[audits.bytes]]
+who = "OpenAI Codex (AI-assisted)"
+criteria = "safe-to-deploy"
+version = "1.12.1"
+notes = "AI-assisted audit: reviewed bytes 1.12.1 crate metadata and unsafe-heavy buffer internals, including Bytes vtable/drop/clone conversions, BytesMut split/freeze/ref-counted shared storage, BufMut implementations, and raw pointer/Vec reconstruction paths. The crate has no build script and no ambient filesystem, network, or process behavior beyond abort-on-impossible-state paths; no exploitable behavior was identified for this project context."
+
 [[audits.hash32]]
 who = "Richard Neumann <neumann@paulmann.de>"
 criteria = "safe-to-deploy"
@@ -108,6 +114,13 @@ criteria = "safe-to-deploy"
 user-id = 3618 # David Tolnay (dtolnay)
 start = "2019-03-11"
 end = "2027-03-30"
+
+[[trusted.le-stream]]
+criteria = "safe-to-deploy"
+user-id = 290593 # Richard Neumann (neumann-paulmann)
+start = "2024-09-18"
+end = "2027-07-10"
+notes = "Project policy permits trusting crates published by neumann-paulmann."
 
 [[trusted.proc-macro2]]
 criteria = "safe-to-deploy"

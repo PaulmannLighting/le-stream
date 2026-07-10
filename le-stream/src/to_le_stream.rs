@@ -1,4 +1,5 @@
 mod alloc;
+mod bytes;
 mod core;
 mod heapless;
 mod intx;
