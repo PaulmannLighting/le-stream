@@ -1,6 +1,10 @@
 
 # cargo-vet imports lock
 
+[[unpublished.le-stream]]
+version = "10.2.0"
+audited_as = "10.1.4"
+
 [[publisher.le-stream]]
 version = "10.1.4"
 when = "2026-07-06"
